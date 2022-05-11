@@ -1,12 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {
-    User,
-    UserVaccine,
-    UserPlace,
-    VaccineLot,
-    Vaccine,
-    Place,
-} = require("../models");
+const { User, UserVaccine, VaccineLot, Vaccine } = require("../models");
 
 exports.create = async (req, res) => {
     const { phoneNumber, idNumber } = req.body;
@@ -106,7 +99,6 @@ exports.delete = async (req, res) => {
     try {
         const { id } = req.params;
         await UserVaccine.deleteMany({ user: id });
-        await UserPlace.deleteMany({ user: id });
         await User.findByIdAndDelete(id);
         res.status(200).json("Deleted");
     } catch (err) {
@@ -140,20 +132,6 @@ exports.vaccinated = async (req, res) => {
             vaccineLotId
         );
         res.status(201).json(savedUserVaccine);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json(err);
-    }
-};
-
-// get places of user
-
-exports.getAllPlace = async (req, res) => {
-    try {
-        const list = await Place.find({
-            creator: req.params.userId,
-        });
-        res.status(200).json(list);
     } catch (err) {
         console.log(err);
         res.status(500).json(err);

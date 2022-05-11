@@ -26,20 +26,11 @@ const sideBarItems = [
         path: "/user",
         icon: <PersonOutlineOutlinedIcon />,
     },
-    {
-        text: "Place",
-        path: "/place",
-        icon: <PlaceOutlinedIcon />,
-    },
+
     {
         text: "Vaccine",
         path: "/vaccine",
         icon: <HealthAndSafetyOutlinedIcon />,
-    },
-    {
-        text: "QR Scan",
-        path: "/qr-scan",
-        icon: <QrCodeScannerOutlinedIcon />,
     },
 ];
 

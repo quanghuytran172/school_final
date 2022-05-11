@@ -3,4 +3,5 @@ module.exports = {
     userController: require("./userController"),
     vaccineController: require("./vaccineController"),
     vaccineLotController: require("./vaccineLotController"),
+    diseaseController: require("./diseaseController"),
 };

@@ -23,7 +23,9 @@ const UserCreate = () => {
     const [nameErr, setNameErr] = useState(false);
     const [phone, setPhone] = useState("");
     const [phoneErr, setPhoneErr] = useState(false);
-    const [address, setAddress] = useState();
+    const [address, setAddress] = useState("");
+    const [addressErr, setAddressErr] = useState(false);
+
     const [idCard, setIdCard] = useState("");
     const [idCardErr, setIdCardErr] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -49,7 +51,7 @@ const UserCreate = () => {
             phoneNumber: phone,
             fullName: name,
             idNumber: idCard,
-            address: address.name,
+            address: address,
         };
 
         try {
@@ -127,6 +129,15 @@ const UserCreate = () => {
                                     />
                                 </FormControl>
                                 <FormControl fullWidth margin='normal'>
+                                    <TextField
+                                        label='Address'
+                                        variant='outlined'
+                                        value={address}
+                                        onChange={(e) =>
+                                            setAddress(e.target.value)
+                                        }
+                                        error={addressErr}
+                                    />
                                     {/* <Autocomplete
                                         options={addressList.data}
                                         getOptionLabel={(option) => option.name}

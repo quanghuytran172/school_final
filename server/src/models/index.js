@@ -4,4 +4,5 @@ module.exports = {
     UserVaccine: require("./userVaccine"),
     Vaccine: require("./vaccine"),
     VaccineLot: require("./vaccineLot"),
+    Disease: require("./disease"),
 };

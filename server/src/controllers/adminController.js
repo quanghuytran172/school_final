@@ -38,7 +38,7 @@ exports.summary = async (req, res) => {
     try {
         const totalUser = await User.find({}).count();
 
-        // count user who has been vaccinated
+        // count user vaccinated
         const userVaccinated = await UserVaccine.aggregate([
             {
                 $group: { _id: "$user" },

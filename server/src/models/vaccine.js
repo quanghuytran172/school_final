@@ -1,11 +1,28 @@
-const mongoose = require('mongoose');
-const { schemaOptions } = require('./modelOptions');
- 
-const vaccineShema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    }
-}, schemaOptions);
+const mongoose = require("mongoose");
+const { schemaOptions } = require("./modelOptions");
+const Schema = mongoose.Schema;
 
-module.exports = mongoose.model('Vaccine', vaccineShema);
+const vaccineShema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        description: {
+            type: String,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        },
+        diseaseId: {
+            type: Schema.Types.ObjectId,
+            ref: "Disease",
+            required: true,
+        },
+    },
+    schemaOptions
+);
+
+module.exports = mongoose.model("Vaccine", vaccineShema);
