@@ -12,6 +12,9 @@ import {
     UserDetail,
     Vaccine,
     VaccineDetail,
+    Disease,
+    Account,
+    AccountDetail,
 } from "./pages";
 
 function App() {
@@ -24,8 +27,11 @@ function App() {
                     <Route path='/user' element={<User />} />
                     <Route path='/user/create' element={<UserCreate />} />
                     <Route path='/user/:id' element={<UserDetail />} />
+                    <Route path='/disease' element={<Disease />} />
                     <Route path='/vaccine' element={<Vaccine />} />
                     <Route path='/vaccine/:id' element={<VaccineDetail />} />
+                    <Route path='/account' element={<Account />} />
+                    <Route path='/account/:id' element={<AccountDetail />} />
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -1,20 +1,25 @@
 const jwt = require("jsonwebtoken");
 const { User, UserVaccine, VaccineLot, Vaccine } = require("../models");
 
+//login OTP using Phone Number
+exports.login = async (req, res) => {
+    return;
+};
+
 exports.create = async (req, res) => {
-    const { phoneNumber, idNumber } = req.body;
+    const { phoneNumber, insuranceNumber } = req.body;
     try {
         let user = await User.findOne({ phoneNumber: phoneNumber });
         if (user)
             return res
                 .status(403)
-                .json("Phone number already registered for another account");
+                .json("Số điện thoại đã tồn tại trong hệ thống");
 
-        user = await User.findOne({ idNumber: idNumber });
+        user = await User.findOne({ insuranceNumber: insuranceNumber });
         if (user)
             return res
                 .status(403)
-                .json("Id number already registered for another account");
+                .json("Số bảo hiểm đã tồn tại trong hệ thống");
 
         const newUser = new User(req.body);
         const savedUser = await newUser.save();
@@ -71,19 +76,19 @@ exports.getOne = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-    const { phoneNumber, idNumber } = req.body;
+    const { phoneNumber, insuranceNumber } = req.body;
     try {
         let user = await User.findOne({ phoneNumber: phoneNumber });
         if (user && user._id.toString() !== req.params.id)
             return res
                 .status(403)
-                .json("Phone number already registered for another account");
+                .json("Số điện thoại đã tồn tại trong hệ thống");
 
-        user = await User.findOne({ idNumber: idNumber });
+        user = await User.findOne({ insuranceNumber: insuranceNumber });
         if (user && user._id.toString() !== req.params.id)
             return res
                 .status(403)
-                .json("Id number already registered for another account");
+                .json("Số bảo hiểm đã tồn tại trong hệ thống");
 
         const updateUser = await User.findByIdAndUpdate(req.params.id, {
             $set: req.body,

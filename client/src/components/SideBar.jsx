@@ -3,8 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import HealthAndSafetyOutlinedIcon from "@mui/icons-material/HealthAndSafetyOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
-import QrCodeScannerOutlinedIcon from "@mui/icons-material/QrCodeScannerOutlined";
+import SickOutlinedIcon from "@mui/icons-material/SickOutlined";
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import {
     Drawer,
     List,
@@ -22,16 +23,30 @@ const sideBarItems = [
         icon: <DashboardOutlinedIcon />,
     },
     {
-        text: "User",
+        text: "Người dùng",
         path: "/user",
         icon: <PersonOutlineOutlinedIcon />,
     },
-
+    {
+        text: "Quản lý tài khoản",
+        path: "/account",
+        icon: <ManageAccountsOutlinedIcon />,
+    },
+    {
+        text: "Danh mục bệnh",
+        path: "/disease",
+        icon: <SickOutlinedIcon />,
+    },
     {
         text: "Vaccine",
         path: "/vaccine",
         icon: <HealthAndSafetyOutlinedIcon />,
     },
+    // {
+    //     text: "Lịch tiêm chủng",
+    //     path: "/calendar",
+    //     icon: <EventNoteOutlinedIcon />,
+    // },
 ];
 
 const SideBar = () => {

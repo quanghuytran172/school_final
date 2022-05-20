@@ -1,4 +1,4 @@
-const { Disease } = require("../models");
+const { Disease, Vaccine, VaccineLot, UserVaccine } = require("../models");
 
 exports.create = async (req, res) => {
     try {
@@ -39,6 +39,9 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
+        await Vaccine.deleteMany({ diseaseId: req.params.id });
+        await VaccineLot.deleteMany({ vaccine: req.params.id });
+        await UserVaccine.deleteMany({ vaccine: req.params.id });
         await Disease.findByIdAndDelete(req.params.id);
         res.status(200).json("Deleted");
     } catch (err) {

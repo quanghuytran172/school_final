@@ -1,5 +1,5 @@
 module.exports = {
-    adminController: require("./adminController"),
+    accountController: require("./accountController"),
     userController: require("./userController"),
     vaccineController: require("./vaccineController"),
     vaccineLotController: require("./vaccineLotController"),

@@ -1,4 +1,4 @@
-const { Vaccine, VaccineLot, UserVaccine } = require("../models");
+const { Vaccine, VaccineLot, UserVaccine, Disease } = require("../models");
 
 exports.create = async (req, res) => {
     try {
@@ -23,7 +23,13 @@ exports.getAll = async (req, res) => {
     try {
         const list = await Vaccine.find({}).sort("-createdAt");
         for (const vaccine of list) {
-            const vaccineLots = await VaccineLot.find({ vaccine: vaccine._id });
+            const disease = await Disease.findOne({
+                _id: vaccine.diseaseId,
+            });
+            const vaccineLots = await VaccineLot.find({
+                vaccine: vaccine._id,
+            });
+            vaccine._doc.diseaseName = disease.name;
             vaccine._doc.quantity = vaccineLots.reduce(
                 (total, item) => total + Number(item.quantity),
                 0

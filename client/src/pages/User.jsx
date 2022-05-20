@@ -4,9 +4,6 @@ import { PageHeader } from "../components";
 import { Link } from "react-router-dom";
 import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import userApi from "../api/userApi";
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
-import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -18,6 +15,7 @@ const User = () => {
         const getUsers = async () => {
             try {
                 const res = await userApi.getAll();
+                console.log(res);
                 setUserList(res);
             } catch (err) {
                 console.log(err);
@@ -28,8 +26,8 @@ const User = () => {
 
     const tableHeader = [
         {
-            field: "idNumber",
-            headerName: "ID card",
+            field: "insuranceNumber",
+            headerName: "Số Thẻ Bảo Hiểm",
             renderCell: (params) => (
                 <Button
                     variant='text'
@@ -41,46 +39,14 @@ const User = () => {
             ),
             width: 170,
         },
-        { field: "fullName", headerName: "FullName", width: 220 },
-        { field: "phoneNumber", headerName: "Phone", width: 170 },
-        {
-            field: "vaccine",
-            headerName: "Vaccinated",
-            width: 250,
-            renderCell: (params) => (
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                    color={
-                        params.value.length > 1
-                            ? "green"
-                            : params.value.length === 1
-                            ? "orange"
-                            : "red"
-                    }
-                >
-                    {params.value.length > 1 && <VerifiedUserIcon />}
-                    {params.value.length === 1 && <ShieldOutlinedIcon />}
-                    {params.value.length < 1 && <ErrorOutlineOutlinedIcon />}
-                    <Typography
-                        variant='body2'
-                        sx={{
-                            marginLeft: "10px",
-                            fontWeight: "500",
-                        }}
-                    >
-                        Vaccinated with {params.value.length} dove
-                        {params.value.length > 1 && "s"}
-                    </Typography>
-                </Box>
-            ),
-        },
-        { field: "address", headerName: "Address", flex: 1 },
+        { field: "fullname", headerName: "Họ Và Tên", width: 220 },
+        { field: "phoneNumber", headerName: "Số Điện Thoại", width: 170 },
+        { field: "identify", headerName: "Căn Cước Công Dân", width: 170 },
+        { field: "address", headerName: "Địa Chỉ", flex: 1, minWidth: 170 },
+
         {
             field: "id",
-            headerName: "Actions",
+            headerName: "Hành động",
             width: 170,
             renderCell: (params) => (
                 <Button
@@ -89,7 +55,7 @@ const User = () => {
                     to={`/user/${params.value}`}
                     startIcon={<OpenInNewOutlinedIcon />}
                 >
-                    Detail
+                    Chi tiết
                 </Button>
             ),
         },
@@ -98,7 +64,7 @@ const User = () => {
     return (
         <>
             <PageHeader
-                title='User list'
+                title='Danh sách người dùng'
                 rightContent={
                     <Button
                         variant='contained'
@@ -106,7 +72,7 @@ const User = () => {
                         to='/user/create'
                         startIcon={<PersonAddOutlinedIcon />}
                     >
-                        Create
+                        Thêm
                     </Button>
                 }
             />

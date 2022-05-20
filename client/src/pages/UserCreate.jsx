@@ -15,43 +15,82 @@ import { CustomDialog, PageHeader } from "../components";
 import { useNavigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 import userApi from "../api/userApi";
-
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const UserCreate = () => {
     const navigate = useNavigate();
     const [onSubmit, setOnSubmit] = useState(false);
+
+    const [insuranceNumber, setInsuranceNumber] = useState("");
+    const [insuranceNumberErr, setInsuranceNumberErr] = useState(false);
+
     const [name, setName] = useState("");
     const [nameErr, setNameErr] = useState(false);
+
+    const [gender, setGender] = useState("");
+    const [genderErr, setGenderErr] = useState(false);
+
+    const [dateOfBirth, setDateOfBirth] = useState("01/01/1990");
+    const [dateOfBirthErr, setDateOfBirthErr] = useState(true);
+
     const [phone, setPhone] = useState("");
     const [phoneErr, setPhoneErr] = useState(false);
+
+    const [identify, setIdentify] = useState("");
+    const [identifyErr, setIdentifyErr] = useState(false);
+
+    const [email, setEmail] = useState("");
+    const [emailErr, setEmailErr] = useState(false);
+
     const [address, setAddress] = useState("");
     const [addressErr, setAddressErr] = useState(false);
 
-    const [idCard, setIdCard] = useState("");
-    const [idCardErr, setIdCardErr] = useState(false);
+    const [job, setJob] = useState("");
+    const [jobErr, setJobErr] = useState(false);
+
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState("");
     const [dialogText, setDialogText] = useState("");
 
     const createUser = async () => {
-        console.log("createUser");
         if (onSubmit) return;
 
-        const err = [!phone, !name, !address, !idCard];
+        const err = [
+            !phone,
+            !name,
+            !address,
+            !insuranceNumber,
+            !gender,
+            !dateOfBirth,
+            !identify,
+            !job,
+            !email,
+        ];
 
-        setIdCardErr(!idCard);
+        setInsuranceNumberErr(!insuranceNumber);
         setPhoneErr(!phone);
         setNameErr(!name);
         setAddressErr(!address);
-
+        setEmailErr(!email);
+        setDateOfBirthErr(!dateOfBirth);
+        setGenderErr(!gender);
+        setIdentifyErr(!identify);
+        setJobErr(!job);
         if (!err.every((e) => !e)) return;
 
         setOnSubmit(true);
 
         const params = {
+            insuranceNumber: insuranceNumber,
+            fullname: name,
+            dateOfBirth: dateOfBirth,
             phoneNumber: phone,
-            fullName: name,
-            idNumber: idCard,
             address: address,
+            gender: gender,
+            identify: identify,
+            email: email,
+            job: job,
         };
 
         try {
@@ -69,23 +108,23 @@ const UserCreate = () => {
 
     return (
         <>
-            <Box width='40%'>
+            <Box width='100%'>
                 <PageHeader
-                    title='Create user'
+                    title='Thêm người dùng'
                     rightContent={
                         <Stack direction='row' spacing={2}>
                             <Button
                                 variant='text'
                                 onClick={() => navigate("/user")}
                             >
-                                Cancel
+                                Hủy
                             </Button>
                             <LoadingButton
                                 variant='contained'
                                 onClick={createUser}
                                 loading={onSubmit}
                             >
-                                Create
+                                Thêm
                             </LoadingButton>
                         </Stack>
                     }
@@ -94,69 +133,143 @@ const UserCreate = () => {
                     <Grid item xs={12}>
                         <Card elevation={0}>
                             <CardContent>
-                                <FormControl fullWidth margin='normal'>
-                                    <TextField
-                                        label='Id card'
-                                        variant='outlined'
-                                        value={idCard}
-                                        onChange={(e) =>
-                                            setIdCard(e.target.value)
-                                        }
-                                        error={idCardErr}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth margin='normal'>
-                                    <TextField
-                                        label='Fullname'
-                                        variant='outlined'
-                                        value={name}
-                                        onChange={(e) =>
-                                            setName(e.target.value)
-                                        }
-                                        error={nameErr}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth margin='normal'>
-                                    <TextField
-                                        label='Phone'
-                                        variant='outlined'
-                                        type='number'
-                                        value={phone}
-                                        onChange={(e) =>
-                                            setPhone(e.target.value)
-                                        }
-                                        error={phoneErr}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth margin='normal'>
-                                    <TextField
-                                        label='Address'
-                                        variant='outlined'
-                                        value={address}
-                                        onChange={(e) =>
-                                            setAddress(e.target.value)
-                                        }
-                                        error={addressErr}
-                                    />
-                                    {/* <Autocomplete
-                                        options={addressList.data}
-                                        getOptionLabel={(option) => option.name}
-                                        renderOption={(props, option) => <Box {...props} component='li'>
-                                            {option.name}
-                                        </Box>}
-                                        renderInput={(params) => <TextField
-                                            {...params}
-                                            label='Address'
-                                            inputProps={{
-                                                ...params.inputProps,
-                                                autoComplete: 'new-password'
-                                            }}
-                                            error={addressErr}
-                                        />}
-                                        value={address}
-                                        onChange={(event, newValue) => setAddress(newValue)}
-                                    /> */}
-                                </FormControl>
+                                <Grid container spacing={4}>
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='Số thẻ bảo hiểm'
+                                                variant='outlined'
+                                                value={insuranceNumber}
+                                                onChange={(e) =>
+                                                    setInsuranceNumber(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                error={insuranceNumberErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='Họ và tên'
+                                                variant='outlined'
+                                                value={name}
+                                                onChange={(e) =>
+                                                    setName(e.target.value)
+                                                }
+                                                error={nameErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='Giới tính'
+                                                variant='outlined'
+                                                value={gender}
+                                                onChange={(e) =>
+                                                    setGender(e.target.value)
+                                                }
+                                                error={genderErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDateFns}
+                                            >
+                                                <DatePicker
+                                                    label='Ngày sinh'
+                                                    value={dateOfBirth}
+                                                    onChange={(newValue) => {
+                                                        setDateOfBirth(
+                                                            newValue
+                                                        );
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                        />
+                                                    )}
+                                                    error={dateOfBirthErr}
+                                                />
+                                            </LocalizationProvider>
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='Số điện thoại'
+                                                variant='outlined'
+                                                type='number'
+                                                value={phone}
+                                                onChange={(e) =>
+                                                    setPhone(e.target.value)
+                                                }
+                                                error={phoneErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='Nghề nghiệp'
+                                                variant='outlined'
+                                                value={job}
+                                                onChange={(e) =>
+                                                    setJob(e.target.value)
+                                                }
+                                                error={jobErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='CCCD/CMND'
+                                                variant='outlined'
+                                                type='number'
+                                                value={identify}
+                                                onChange={(e) =>
+                                                    setIdentify(e.target.value)
+                                                }
+                                                error={identifyErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='Email'
+                                                variant='outlined'
+                                                value={email}
+                                                onChange={(e) =>
+                                                    setEmail(e.target.value)
+                                                }
+                                                error={emailErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <FormControl fullWidth margin='normal'>
+                                            <TextField
+                                                label='Địa chỉ'
+                                                variant='outlined'
+                                                value={address}
+                                                multiline
+                                                onChange={(e) =>
+                                                    setAddress(e.target.value)
+                                                }
+                                                error={addressErr}
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
                             </CardContent>
                         </Card>
                     </Grid>

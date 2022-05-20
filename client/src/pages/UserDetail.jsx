@@ -5,24 +5,34 @@ import {
     Grid,
     Stack,
     TextField,
-    Autocomplete,
     Box,
     CardActions,
     Typography,
     Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import userApi from "../api/userApi";
-import { PageHeader, CustomDialog, UserVaccine } from "../components";
+import {
+    PageHeader,
+    CustomDialog,
+    UserVaccine,
+    CustomDialogConfirm,
+} from "../components";
 import { LoadingButton } from "@mui/lab";
-
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 const UserDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [user, setUser] = useState();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState("");
     const [dialogText, setDialogText] = useState("");
+    const [onDelete, setOnDelete] = useState(false);
+
+    const [dialogOpenConfirm, setDialogOpenConfirm] = useState(false);
 
     useEffect(() => {
         const getUser = async () => {
@@ -38,22 +48,48 @@ const UserDetail = () => {
     }, []);
 
     const onUpdateSuccess = () => {
-        console.log("onUpdateSuccess");
         setDialogType("success");
-        setDialogText("User updated");
+        setDialogText("Cập nhật thông tin người dùng thành công");
         setDialogOpen(true);
     };
 
     const onUpdateFalse = (message) => {
-        console.log("onUpdateFalse");
         setDialogType("error");
-        setDialogText(message || "User update fail");
+        setDialogText(message || "Cập nhật thất bại");
         setDialogOpen(true);
+    };
+    const deleteUser = async () => {
+        if (onDelete) return;
+        setOnDelete(true);
+        try {
+            await userApi.delete(id);
+            setOnDelete(false);
+            navigate("/user");
+        } catch (err) {
+            console.log(err);
+            setOnDelete(false);
+            setDialogText("Xóa thất bại");
+            setDialogType("error");
+            setDialogOpen(true);
+        }
     };
 
     return (
         <>
-            <PageHeader title='User detail' />
+            <PageHeader
+                title='Thông tin chi tiết người dùng'
+                rightContent={
+                    <LoadingButton
+                        variant='text'
+                        disableElevation
+                        color='error'
+                        loading={onDelete}
+                        onClick={() => setDialogOpenConfirm(true)}
+                    >
+                        XÓA NGƯỜI DÙNG
+                    </LoadingButton>
+                }
+            />
             <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <Stack spacing={4}>
@@ -68,6 +104,19 @@ const UserDetail = () => {
                     </Stack>
                 </Grid>
             </Grid>
+            <CustomDialogConfirm
+                open={dialogOpenConfirm}
+                title={"Xác nhận xóa"}
+                content={"Bạn có muốn xóa người dùng này không ?"}
+                handleClose={() => {
+                    setDialogOpenConfirm(false);
+                }}
+                handleOk={() => {
+                    deleteUser();
+                    setDialogOpenConfirm(false);
+                }}
+                delete={true}
+            />
             <CustomDialog
                 open={dialogOpen}
                 type={dialogType}
@@ -99,34 +148,74 @@ export default UserDetail;
 
 const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
     const [onUpdate, setOnUpdate] = useState(false);
-    const [name, setName] = useState(user.fullName);
+
+    const [insuranceNumber, setInsuranceNumber] = useState(
+        user.insuranceNumber
+    );
+    const [insuranceNumberErr, setInsuranceNumberErr] = useState(false);
+
+    const [name, setName] = useState(user.fullname);
     const [nameErr, setNameErr] = useState(false);
+
+    const [gender, setGender] = useState(user.gender);
+    const [genderErr, setGenderErr] = useState(false);
+
+    const [dateOfBirth, setDateOfBirth] = useState(user.dateOfBirth);
+    const [dateOfBirthErr, setDateOfBirthErr] = useState(false);
+
     const [phone, setPhone] = useState(user.phoneNumber);
     const [phoneErr, setPhoneErr] = useState(false);
 
+    const [identify, setIdentify] = useState(user.identify);
+    const [identifyErr, setIdentifyErr] = useState(false);
+
+    const [email, setEmail] = useState(user.email);
+    const [emailErr, setEmailErr] = useState(false);
+
+    const [address, setAddress] = useState(user.address);
     const [addressErr, setAddressErr] = useState(false);
-    const [idCard, setIdCard] = useState(user.idNumber);
-    const [idCardErr, setIdCardErr] = useState(false);
+
+    const [job, setJob] = useState(user.job);
+    const [jobErr, setJobErr] = useState(false);
 
     const updateUser = async () => {
         if (onUpdate) return;
 
-        const err = [!phone, !name, !address, !idCard];
+        const err = [
+            !phone,
+            !name,
+            !address,
+            !insuranceNumber,
+            !gender,
+            !dateOfBirth,
+            !identify,
+            !job,
+            !email,
+        ];
 
-        setIdCardErr(!idCard);
+        setInsuranceNumberErr(!insuranceNumber);
         setPhoneErr(!phone);
         setNameErr(!name);
         setAddressErr(!address);
-
+        setEmailErr(!email);
+        setDateOfBirthErr(!dateOfBirth);
+        setGenderErr(!gender);
+        setIdentifyErr(!identify);
+        setJobErr(!job);
         if (!err.every((e) => !e)) return;
 
         setOnUpdate(true);
 
         const params = {
+            insuranceNumber: insuranceNumber,
+            fullname: name,
+            dateOfBirth: dateOfBirth,
             phoneNumber: phone,
-            fullName: name,
-            idNumber: idCard,
-            address: address.name,
+            address: address,
+            gender: gender,
+            identify: identify,
+            email: email,
+            job: job,
         };
 
         try {
@@ -145,21 +234,23 @@ const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
         <Card elevation={0}>
             <CardContent>
                 <Grid container spacing={4}>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <FormControl fullWidth margin='normal'>
                             <TextField
-                                label='Id card'
+                                label='Số thẻ bảo hiểm'
                                 variant='outlined'
-                                value={idCard}
-                                onChange={(e) => setIdCard(e.target.value)}
-                                error={idCardErr}
+                                value={insuranceNumber}
+                                onChange={(e) =>
+                                    setInsuranceNumber(e.target.value)
+                                }
+                                error={insuranceNumberErr}
                             />
                         </FormControl>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <FormControl fullWidth margin='normal'>
                             <TextField
-                                label='Fullname'
+                                label='Họ và tên'
                                 variant='outlined'
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -167,10 +258,41 @@ const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
                             />
                         </FormControl>
                     </Grid>
-                    <Grid item xs={6}>
+
+                    <Grid item xs={4}>
                         <FormControl fullWidth margin='normal'>
                             <TextField
-                                label='Phone'
+                                label='Giới tính'
+                                variant='outlined'
+                                value={gender}
+                                onChange={(e) => setGender(e.target.value)}
+                                error={genderErr}
+                            />
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <FormControl fullWidth margin='normal'>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label='Ngày sinh'
+                                    value={dateOfBirth}
+                                    onChange={(newValue) => {
+                                        setDateOfBirth(newValue);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField {...params} />
+                                    )}
+                                    error={dateOfBirthErr}
+                                />
+                            </LocalizationProvider>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <FormControl fullWidth margin='normal'>
+                            <TextField
+                                label='Số điện thoại'
                                 variant='outlined'
                                 type='number'
                                 value={phone}
@@ -179,9 +301,56 @@ const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
                             />
                         </FormControl>
                     </Grid>
+                    <Grid item xs={4}>
+                        <FormControl fullWidth margin='normal'>
+                            <TextField
+                                label='Nghề nghiệp'
+                                variant='outlined'
+                                value={job}
+                                onChange={(e) => setJob(e.target.value)}
+                                error={jobErr}
+                            />
+                        </FormControl>
+                    </Grid>
                     <Grid item xs={6}>
                         <FormControl fullWidth margin='normal'>
-                            {/* <Autocomplete
+                            <TextField
+                                label='CCCD/CMND'
+                                variant='outlined'
+                                type='number'
+                                value={identify}
+                                onChange={(e) => setIdentify(e.target.value)}
+                                error={identifyErr}
+                            />
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={6}>
+                        <FormControl fullWidth margin='normal'>
+                            <TextField
+                                label='Email'
+                                variant='outlined'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                error={emailErr}
+                            />
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth margin='normal'>
+                            <TextField
+                                label='Địa chỉ'
+                                variant='outlined'
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                error={addressErr}
+                            />
+                        </FormControl>
+                    </Grid>
+
+                    {/* <Grid item xs={6}>
+                        <FormControl fullWidth margin='normal'>
+                            <Autocomplete
                                 options={addressList.data}
                                 getOptionLabel={(option) => option.name}
                                 renderOption={(props, option) => (
@@ -204,9 +373,9 @@ const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
                                 onChange={(event, newValue) =>
                                     setAddress(newValue)
                                 }
-                            /> */}
+                            />
                         </FormControl>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </CardContent>
             <CardActions>
@@ -216,7 +385,7 @@ const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
                     onClick={updateUser}
                     loading={onUpdate}
                 >
-                    Update
+                    Cập nhật
                 </LoadingButton>
             </CardActions>
         </Card>

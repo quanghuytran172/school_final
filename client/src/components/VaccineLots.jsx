@@ -14,7 +14,7 @@ import { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
-import { CustomDialog } from ".";
+import { CustomDialog, CustomDialogConfirm } from ".";
 import vaccineLotApi from "../api/vaccineLotApi";
 
 const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
@@ -29,31 +29,38 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     const [onUpdate, setOnUpdate] = useState(false);
     const [selectedLot, setSelectedLot] = useState();
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogType, setDialogType] = useState("");
+    const [dialogText, setDialogText] = useState("");
+    const [dialogOpenConfirm, setDialogOpenConfirm] = useState({
+        status: false,
+        params: "",
+    });
 
     const tableHeader = [
         {
             field: "name",
-            headerName: "Lot number",
+            headerName: "Số Lô",
             width: 200,
         },
         {
             field: "quantity",
-            headerName: "Quantity",
+            headerName: "Số Lượng Nhập",
             width: 150,
             align: "right",
             renderCell: (params) => params.value.toLocaleString("de-dE"),
         },
         {
             field: "vaccinated",
-            headerName: "Vaccinated",
-            width: 150,
+            headerName: "Số Vaccine Đã Tiêm",
+            width: 200,
             align: "right",
             renderCell: (params) => params.value.toLocaleString("de-dE"),
         },
         {
             field: "id",
-            headerName: "Availabe",
-            width: 150,
+            headerName: "Số Vaccine Hiện Có",
+            width: 200,
             align: "right",
             renderCell: (params) =>
                 (params.row.quantity - params.row.vaccinated).toLocaleString(
@@ -62,14 +69,14 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
         },
         {
             field: "createdAt",
-            headerName: "Time",
+            headerName: "Thời Gian Tạo",
             flex: 1,
             renderCell: (params) =>
                 moment(params.value).format("DD-MM-YYYY HH:mm:ss"),
         },
         {
             field: "_id",
-            headerName: "Actions",
+            headerName: "Hành Động",
             flex: 1,
             renderCell: (params) => (
                 <>
@@ -78,16 +85,22 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                         disableElevation
                         startIcon={<DeleteOutlineOutlinedIcon />}
                         loading={onDelete}
-                        onClick={() => deleteLot(params.row.id)}
+                        onClick={() =>
+                            setDialogOpenConfirm({
+                                status: true,
+                                params: params.value,
+                            })
+                        }
                     >
-                        Delete
+                        Xóa
                     </LoadingButton>
+
                     <Button
                         disableElevation
                         startIcon={<ModeEditOutlineOutlinedIcon />}
                         onClick={() => selectLot(params.row)}
                     >
-                        Edit
+                        Chỉnh sửa
                     </Button>
                 </>
             ),
@@ -162,9 +175,15 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
             await vaccineLotApi.update(selectedLot.id, params);
             setQuantity("");
             setLotNumber("");
+            setDialogText("Cập nhật thành công");
+            setDialogType("success");
+            setDialogOpen(true);
             setShowUpdateDialog(false);
             onLotUpdated();
         } catch (err) {
+            setDialogText("Cập nhật thất bại");
+            setDialogType("error");
+            setDialogOpen(true);
             console.log(err);
         } finally {
             setOnUpdate(false);
@@ -176,7 +195,9 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
             <Card elevation={0}>
                 <CardHeader
                     title={
-                        <Typography variant='h6'>Lots information</Typography>
+                        <Typography variant='h6'>
+                            Thông tin lô Vaccine
+                        </Typography>
                     }
                     action={
                         <Button
@@ -184,7 +205,7 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                             disableElevation
                             onClick={() => setShowAddDialog(true)}
                         >
-                            Add lot
+                            Thêm lô vaccine
                         </Button>
                     }
                 />
@@ -205,12 +226,12 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
             </Card>
             <CustomDialog
                 open={showAddDialog}
-                title='Add vaccine lot'
+                title='Thêm lô vaccine'
                 content={
                     <Box sx={{ width: "400px" }}>
                         <FormControl fullWidth margin='normal'>
                             <TextField
-                                label='Lot number'
+                                label='Số Lô'
                                 variant='outlined'
                                 value={lotNumber}
                                 onChange={(e) => setLotNumber(e.target.value)}
@@ -219,7 +240,7 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                         </FormControl>
                         <FormControl fullWidth margin='normal'>
                             <TextField
-                                label='Quantity'
+                                label='Số Lượng'
                                 variant='outlined'
                                 type='number'
                                 value={quantity}
@@ -242,7 +263,7 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                             onClick={() => setShowAddDialog(false)}
                             // disable={onSubmit}
                         >
-                            Cancel
+                            Hủy
                         </Button>
                         <LoadingButton
                             variant='contained'
@@ -250,19 +271,19 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                             loading={onSubmit}
                             onClick={createLot}
                         >
-                            Save
+                            Thêm
                         </LoadingButton>
                     </Box>
                 }
             />
             <CustomDialog
                 open={showUpdateDialog}
-                title='Update vaccine lot'
+                title='Cập nhật lô vaccine'
                 content={
                     <Box sx={{ width: "400px" }}>
                         <FormControl fullWidth margin='normal'>
                             <TextField
-                                label='Lot number'
+                                label='Số Lô'
                                 variant='outlined'
                                 value={lotNumber}
                                 onChange={(e) => setLotNumber(e.target.value)}
@@ -271,7 +292,7 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                         </FormControl>
                         <FormControl fullWidth margin='normal'>
                             <TextField
-                                label='Quantity'
+                                label='Số Lượng Nhập'
                                 variant='outlined'
                                 type='number'
                                 value={quantity}
@@ -294,7 +315,7 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                             onClick={hideUpdateDialog}
                             // disable={onUpdate}
                         >
-                            Cancel
+                            Hủy
                         </Button>
                         <LoadingButton
                             variant='contained'
@@ -302,10 +323,46 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
                             loading={onUpdate}
                             onClick={updateLot}
                         >
-                            Update
+                            Cập nhật
                         </LoadingButton>
                     </Box>
                 }
+            />
+            <CustomDialog
+                open={dialogOpen}
+                type={dialogType}
+                showIcon
+                content={
+                    <Typography variant='subtitle1' textAlign='center'>
+                        {dialogText}
+                    </Typography>
+                }
+                actions={
+                    <Box
+                        width='100%'
+                        sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                        <Button
+                            variant='contained'
+                            onClick={() => setDialogOpen(false)}
+                        >
+                            OK
+                        </Button>
+                    </Box>
+                }
+            />
+            <CustomDialogConfirm
+                open={dialogOpenConfirm.status}
+                title={"Xác nhận xóa lô vaccine"}
+                content={"Bạn có muốn xóa lô vaccine này không ?"}
+                handleClose={() => {
+                    setDialogOpenConfirm({ status: false, params: "" });
+                }}
+                handleOk={() => {
+                    deleteLot(dialogOpenConfirm.params);
+                    setDialogOpenConfirm({ status: false, params: "" });
+                }}
+                delete={true}
             />
         </>
     );

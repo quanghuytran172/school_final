@@ -6,3 +6,6 @@ export { default as UserCreate } from "./UserCreate";
 export { default as UserDetail } from "./UserDetail";
 export { default as Vaccine } from "./Vaccine";
 export { default as VaccineDetail } from "./VaccineDetail";
+export { default as Disease } from "./Disease";
+export { default as Account } from "./Account";
+export { default as AccountDetail } from "./AccountDetail";

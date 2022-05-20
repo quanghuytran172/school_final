@@ -1,88 +1,60 @@
 import {
-    Autocomplete,
-    Box,
     Button,
-    FormControl,
-    Grid,
-    Paper,
-    TextField,
+    Box,
     Typography,
+    Paper,
+    Grid,
+    FormControl,
+    Autocomplete,
+    TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { CustomDialog, PageHeader } from "../components";
 import { Link } from "react-router-dom";
-import diseaseApi from "../api/diseaseApi";
-import { PageHeader, CustomDialog } from "../components";
-import moment from "moment";
-import { DataGrid } from "@mui/x-data-grid";
-import { LoadingButton } from "@mui/lab";
-import vaccineApi from "../api/vaccineApi";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
+import accountApi from "../api/accountApi";
 import OpenInNewOutlinedIcon from "@mui/icons-material/OpenInNewOutlined";
+import { DataGrid } from "@mui/x-data-grid";
+import moment from "moment";
+import { LoadingButton } from "@mui/lab";
 
-const Vaccine = () => {
-    const [vaccineList, setVaccineList] = useState([]);
+const Account = () => {
+    const [userList, setUserList] = useState([]);
     const [pageSize, setPageSize] = useState(9);
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     useEffect(() => {
-        const getVaccines = async () => {
+        const getAccounts = async () => {
             try {
-                const res = await vaccineApi.getAll();
+                const res = await accountApi.getAll();
                 console.log(res);
-                setVaccineList(res);
+                setUserList(res);
             } catch (err) {
                 console.log(err);
             }
         };
-        getVaccines();
+        getAccounts();
     }, []);
 
     const tableHeader = [
         {
-            field: "name",
-            headerName: "Tên Vaccine",
-            width: 220,
+            field: "username",
+            headerName: "Tên tài khoản",
             renderCell: (params) => (
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/vaccine/${params.row.id}`}
+                    to={`/account/${params.row.id}`}
                 >
                     {params.value}
                 </Button>
             ),
+            width: 150,
         },
-        {
-            field: "diseaseName",
-            headerName: "Danh Mục Bệnh",
-            width: 220,
-            renderCell: (params) => params.value,
-        },
-        {
-            field: "description",
-            headerName: "Mô Tả",
-            width: 400,
-            renderCell: (params) => params.value,
-        },
-        {
-            field: "price",
-            headerName: "Giá Tiền",
-            align: "right",
-
-            width: 170,
-            renderCell: (params) => params.value,
-        },
-
-        {
-            field: "id",
-            headerName: "Số Vaccine Hiện Có",
-            align: "right",
-            width: 170,
-            renderCell: (params) =>
-                (params.row.quantity - params.row.vaccinated).toLocaleString(
-                    "de-DE"
-                ),
-        },
-
+        { field: "roleName", headerName: "Vai Trò", width: 170 },
+        { field: "fullname", headerName: "Họ Và Tên", width: 170 },
+        { field: "phoneNumber", headerName: "Số Điện Thoại", width: 170 },
+        { field: "email", headerName: "Email", width: 170 },
         {
             field: "createdAt",
             headerName: "Thời Gian Tạo",
@@ -92,16 +64,15 @@ const Vaccine = () => {
                 moment(params.value).format("DD-MM-YYYY HH:mm:ss"),
         },
         {
-            field: "_id",
+            field: "id",
             headerName: "Hành động",
             flex: 1,
-
             minWidth: 170,
             renderCell: (params) => (
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/vaccine/${params.value}`}
+                    to={`/account/${params.value}`}
                     startIcon={<OpenInNewOutlinedIcon />}
                 >
                     Chi tiết
@@ -109,20 +80,19 @@ const Vaccine = () => {
             ),
         },
     ];
-
-    const onCreateSuccess = (newVaccine) => {
-        setVaccineList([newVaccine, ...vaccineList]);
+    const onCreateSuccess = (newAccount) => {
+        setUserList([newAccount, ...userList]);
         setShowCreateModal(false);
     };
 
     return (
         <>
             <PageHeader
-                title='Danh sách Vaccine'
+                title='Danh sách tài khoản'
                 rightContent={
                     <Button
                         variant='contained'
-                        disableElevation
+                        startIcon={<PersonAddOutlinedIcon />}
                         onClick={() => setShowCreateModal(true)}
                     >
                         Thêm
@@ -132,7 +102,7 @@ const Vaccine = () => {
             <Paper elevation={0}>
                 <DataGrid
                     autoHeight
-                    rows={vaccineList}
+                    rows={userList}
                     columns={tableHeader}
                     pageSize={pageSize}
                     rowsPerPageOptions={[9, 50, 100]}
@@ -143,7 +113,7 @@ const Vaccine = () => {
                     disableSelectionOnClick
                 />
             </Paper>
-            <VaccineCreateModal
+            <AccountCreateModal
                 show={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
                 onSuccess={onCreateSuccess}
@@ -152,142 +122,194 @@ const Vaccine = () => {
     );
 };
 
-export default Vaccine;
+export default Account;
 
-const VaccineCreateModal = ({ show, onClose, onSuccess }) => {
-    const [name, setName] = useState("");
-    const [nameErr, setNameErr] = useState(false);
-    const [description, setDescription] = useState("");
-    const [descriptionErr, setDescriptionErr] = useState(false);
-    const [price, setPrice] = useState("");
-    const [priceErr, setPriceErr] = useState(false);
+const AccountCreateModal = ({ show, onClose, onSuccess }) => {
+    const [username, setUsername] = useState("");
+    const [usernameErr, setUsernameErr] = useState(false);
+    const [password, setPassword] = useState("");
+    const [passwordErr, setPasswordErr] = useState(false);
+    const [fullname, setFullname] = useState("");
+    const [fullnameErr, setFullnameErr] = useState(false);
+    const [selectedRole, setSelectedRole] = useState(null);
+    const [roleErr, setRoleErr] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumberErr, setPhoneNumberErr] = useState(false);
+    const [email, setEmail] = useState("");
+    const [emailErr, setEmailErr] = useState(false);
+
     const [onSubmit, setOnSubmit] = useState(false);
-    const [selectedDisease, setSelectedDisease] = useState(null);
-    const [diseaseErr, setDiseaseErr] = useState(false);
-
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState("");
     const [dialogText, setDialogText] = useState("");
-    const [diseaseList, setDiseaseList] = useState([]);
-    const createVaccine = async () => {
+    const [roleList, setRoleList] = useState([]);
+    const createAccount = async () => {
         if (onSubmit) return;
-        const err = [!selectedDisease, !name, !price, !description];
-        setDiseaseErr(!selectedDisease);
-        setNameErr(!name);
-        setDescriptionErr(!description);
-        setPriceErr(!price);
+        const err = [
+            !selectedRole,
+            !username,
+            !fullname,
+            !password,
+            !phoneNumber,
+            !email,
+        ];
+        setRoleErr(!selectedRole);
+        setUsernameErr(!username);
+        setPasswordErr(!password);
+        setFullnameErr(!fullname);
+        setPhoneNumberErr(!phoneNumber);
+        setEmailErr(!email);
         if (!err.every((e) => !e)) return;
         setOnSubmit(true);
         try {
-            const res = await vaccineApi.create({
-                name,
-                price,
-                description,
-                diseaseId: selectedDisease.id,
+            const res = await accountApi.create({
+                username,
+                password,
+                fullname,
+                email,
+                phoneNumber,
+                roleId: selectedRole.id,
             });
-            res.diseaseName = selectedDisease.name;
-            setName("");
-            setSelectedDisease(null);
-            setPrice("");
-            setDescription("");
+            res.roleName = selectedRole.roleName;
+            setUsername("");
+            setSelectedRole(null);
+            setEmail("");
+            setPassword("");
+            setPhoneNumber("");
+            setFullname("");
             setDialogText("Thêm thành công");
             setDialogType("success");
             setDialogOpen(true);
             onSuccess(res);
         } catch (err) {
-            console.log(err);
-            setDialogText("Thêm thất bại");
-            setDialogType("error");
-            setDialogOpen(true);
+            if (err.response.status === 403) {
+                setDialogText(err.response.data);
+                setDialogType("error");
+                setDialogOpen(true);
+            }
         } finally {
             setOnSubmit(false);
         }
     };
     useEffect(() => {
-        const getDisease = async () => {
+        const getAllRole = async () => {
             try {
-                const res = await diseaseApi.getAll();
-                setDiseaseList(res);
+                const res = await accountApi.getRole();
+                setRoleList(res);
             } catch (err) {
                 console.log(err);
             }
         };
-        getDisease();
+        getAllRole();
     }, []);
     return (
         <>
             <CustomDialog
                 open={show}
-                title='Thêm vaccine'
+                title='Thêm tài khoản'
                 content={
-                    <Box padding='5px 0'>
+                    <Box padding='5px 0' component='form'>
                         <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label='Tên tài khoản'
+                                        variant='outlined'
+                                        value={username}
+                                        onChange={(e) =>
+                                            setUsername(e.target.value)
+                                        }
+                                        error={usernameErr}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label='Mật khẩu'
+                                        type={"password"}
+                                        variant='outlined'
+                                        autoComplete='current-password'
+                                        value={password}
+                                        onChange={(e) =>
+                                            setPassword(e.target.value)
+                                        }
+                                        error={passwordErr}
+                                    />
+                                </FormControl>
+                            </Grid>
                             <Grid item xs={12}>
                                 <FormControl fullWidth margin='normal'>
                                     <Autocomplete
-                                        options={diseaseList}
-                                        getOptionLabel={(option) => option.name}
+                                        options={roleList}
+                                        getOptionLabel={(option) =>
+                                            option.roleName
+                                        }
                                         renderOption={(props, option) => (
                                             <Box {...props} component='li'>
-                                                {option.name}
+                                                {option.roleName}
                                             </Box>
                                         )}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
-                                                label='Danh mục bệnh'
+                                                label='Vai trò'
                                                 inputProps={{
                                                     ...params.inputProps,
                                                     autoComplete:
                                                         "new-password",
                                                 }}
-                                                error={diseaseErr}
+                                                error={roleErr}
                                             />
                                         )}
-                                        value={selectedDisease}
+                                        value={selectedRole}
                                         onChange={(event, value) => {
-                                            setSelectedDisease(value);
+                                            setSelectedRole(value);
                                         }}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={6}>
+
+                            <Grid item xs={12}>
                                 <FormControl fullWidth>
                                     <TextField
-                                        label='Tên vaccine'
+                                        label='Họ và tên'
                                         variant='outlined'
-                                        value={name}
+                                        value={fullname}
                                         onChange={(e) =>
-                                            setName(e.target.value)
+                                            setFullname(e.target.value)
                                         }
-                                        error={nameErr}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        label='Giá tiền'
-                                        variant='outlined'
-                                        value={price}
-                                        type='number'
-                                        onChange={(e) =>
-                                            setPrice(e.target.value)
-                                        }
-                                        error={priceErr}
+                                        error={fullnameErr}
                                     />
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl fullWidth>
                                     <TextField
-                                        label='Mô tả'
+                                        label='Số điện thoại'
                                         variant='outlined'
-                                        value={description}
+                                        value={phoneNumber}
+                                        type={"number"}
                                         onChange={(e) =>
-                                            setDescription(e.target.value)
+                                            setPhoneNumber(e.target.value)
                                         }
-                                        error={descriptionErr}
+                                        error={phoneNumberErr}
+                                    />
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        label='Email'
+                                        variant='outlined'
+                                        value={email}
+                                        type='email'
+                                        autoComplete={"email"}
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
+                                        error={emailErr}
                                     />
                                 </FormControl>
                             </Grid>
@@ -305,14 +327,19 @@ const VaccineCreateModal = ({ show, onClose, onSuccess }) => {
                         <Button
                             variant='text'
                             onClick={() => {
-                                setName("");
-                                setSelectedDisease(null);
-                                setPrice("");
-                                setDescription("");
-                                setDiseaseErr(false);
-                                setNameErr(false);
-                                setDescriptionErr(false);
-                                setPriceErr(false);
+                                setUsername("");
+                                setSelectedRole(null);
+                                setEmail("");
+                                setPassword("");
+                                setPhoneNumber("");
+                                setFullname("");
+
+                                setUsernameErr(false);
+                                setRoleErr(false);
+                                setEmailErr(false);
+                                setPasswordErr(false);
+                                setPhoneNumberErr(false);
+                                setFullnameErr(false);
                                 onClose();
                             }}
                         >
@@ -320,7 +347,7 @@ const VaccineCreateModal = ({ show, onClose, onSuccess }) => {
                         </Button>
                         <LoadingButton
                             variant='contained'
-                            onClick={createVaccine}
+                            onClick={createAccount}
                             loading={onSubmit}
                         >
                             Thêm
