@@ -1,4 +1,4 @@
-const { Vaccine, VaccineLot, UserVaccine } = require("../models");
+const { VaccineLot, UserVaccine } = require("../models");
 
 exports.create = async (req, res) => {
     try {

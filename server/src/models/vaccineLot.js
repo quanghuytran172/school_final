@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { schemaOptions } = require("./modelOptions");
 const Schema = mongoose.Schema;
 
-const vaccineLotShema = new mongoose.Schema(
+const vaccineLotSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -26,4 +26,4 @@ const vaccineLotShema = new mongoose.Schema(
     schemaOptions
 );
 
-module.exports = mongoose.model("VaccineLot", vaccineLotShema);
+module.exports = mongoose.model("VaccineLot", vaccineLotSchema);

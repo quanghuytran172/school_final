@@ -6,7 +6,11 @@ const tokenHandler = require("../handlers/tokenHandler");
 
 router.post("/", tokenHandler.verifyAdminToken, vaccineController.create);
 
-router.get("/", tokenHandler.verifyAdminToken, vaccineController.getAll);
+router.get(
+    "/",
+    tokenHandler.verifyVaccinatedHelperToken,
+    vaccineController.getAll
+);
 
 router.get("/:id", tokenHandler.verifyAdminToken, vaccineController.getOne);
 

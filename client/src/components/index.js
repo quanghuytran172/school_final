@@ -7,3 +7,4 @@ export { default as CustomDialogConfirm } from "./CustomDialogConfirm";
 
 export { default as VaccineLots } from "./VaccineLots";
 export { default as UserVaccine } from "./UserVaccine";
+

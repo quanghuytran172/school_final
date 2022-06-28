@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { schemaOptions } = require("./modelOptions");
 
-const accountRoleShema = new mongoose.Schema(
+const accountRoleSchema = new mongoose.Schema(
     {
         roleName: {
             type: String,
@@ -11,4 +11,4 @@ const accountRoleShema = new mongoose.Schema(
     schemaOptions
 );
 
-module.exports = mongoose.model("AccountRole", accountRoleShema);
+module.exports = mongoose.model("AccountRole", accountRoleSchema);

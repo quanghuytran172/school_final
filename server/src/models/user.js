@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { schemaOptions } = require("./modelOptions");
 
-const userShema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
     {
         insuranceNumber: {
             type: String,
@@ -46,4 +46,4 @@ const userShema = new mongoose.Schema(
     schemaOptions
 );
 
-module.exports = mongoose.model("User", userShema);
+module.exports = mongoose.model("User", userSchema);

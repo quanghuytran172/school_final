@@ -38,126 +38,134 @@ const Dashboard = () => {
     }, []);
 
     return (
-        // <Stack spacing={4}>
-        //     <div>
-        //         <Grid container spacing={2}>
-        //             <Grid item xs={3}>
-        //                 <Card elevation={0}>
-        //                     <CardContent>
-        //                         {summaryData && (
-        //                             <SummaryInfo
-        //                                 title='Total user'
-        //                                 number={summaryData.totalUser.toLocaleString(
-        //                                     "de-DE"
-        //                                 )}
-        //                                 icon={
-        //                                     <PersonOutlineOutlinedIcon
-        //                                         sx={{ fontSize: "3rem" }}
-        //                                         color='warning'
-        //                                     />
-        //                                 }
-        //                             />
-        //                         )}
-        //                     </CardContent>
-        //                 </Card>
-        //             </Grid>
-        //             <Grid item xs={3}>
-        //                 <Card elevation={0}>
-        //                     <CardContent>
-        //                         {summaryData && (
-        //                             <SummaryInfo
-        //                                 title='User vaccinated'
-        //                                 number={summaryData.userVaccinated.toLocaleString(
-        //                                     "de-DE"
-        //                                 )}
-        //                                 icon={
-        //                                     <VerifiedUserOutlinedIcon
-        //                                         sx={{ fontSize: "3rem" }}
-        //                                         color='success'
-        //                                     />
-        //                                 }
-        //                             />
-        //                         )}
-        //                     </CardContent>
-        //                 </Card>
-        //             </Grid>
-        //             <Grid item xs={3}>
-        //                 <Card elevation={0}>
-        //                     <CardContent>
-        //                         {summaryData && (
-        //                             <SummaryInfo
-        //                                 title='Availabe vaccine dose'
-        //                                 number={summaryData.availableVaccineDose.toLocaleString(
-        //                                     "de-DE"
-        //                                 )}
-        //                                 icon={
-        //                                     <AddModeratorOutlinedIcon
-        //                                         sx={{ fontSize: "3rem" }}
-        //                                         color='primary'
-        //                                     />
-        //                                 }
-        //                             />
-        //                         )}
-        //                     </CardContent>
-        //                 </Card>
-        //             </Grid>
-        //             <Grid item xs={3}></Grid>
-        //         </Grid>
-        //     </div>
-        //     <div>
-        //         <Grid container spacing={2}>
-        //             <Grid item xs={4}>
-        //                 <Card elevation={0}>
-        //                     <CardHeader
-        //                         title={
-        //                             <Typography variant='h6'>
-        //                                 Vaccinated analyst
-        //                             </Typography>
-        //                         }
-        //                     />
-        //                     <CardContent>
-        //                         {summaryData && (
-        //                             <VaccinatedChart
-        //                                 chartData={
-        //                                     summaryData.userVaccinatedAnalyst
-        //                                 }
-        //                             />
-        //                         )}
-        //                     </CardContent>
-        //                 </Card>
-        //             </Grid>
-        //             <Grid item xs={8}>
-        //                 <Card elevation={0}>
-        //                     <CardHeader
-        //                         title={
-        //                             <Typography variant='h6'>
-        //                                 Latest vaccine lots
-        //                             </Typography>
-        //                         }
-        //                         action={
-        //                             <Button
-        //                                 variant='text'
-        //                                 disableElevation
-        //                                 component={Link}
-        //                                 to='/vaccine'
-        //                             >
-        //                                 Manage vaccine
-        //                             </Button>
-        //                         }
-        //                     />
-        //                     <CardContent>
-        //                         {summaryData && (
-        //                             <LatestVaccineLotTable
-        //                                 list={summaryData.latestVaccineLot}
-        //                             />
-        //                         )}
-        //                     </CardContent>
-        //                 </Card>
-        //             </Grid>
-        //         </Grid>
-        //     </div>
-        // </Stack>
-        <></>
+        <Stack spacing={4}>
+            <div>
+                <Grid container spacing={2}>
+                    <Grid item xs={3}>
+                        <Card elevation={0}>
+                            <CardContent>
+                                {summaryData && (
+                                    <SummaryInfo
+                                        title='Tổng số người dân'
+                                        number={summaryData.totalUser.toLocaleString(
+                                            "de-DE"
+                                        )}
+                                        icon={
+                                            <PersonOutlineOutlinedIcon
+                                                sx={{ fontSize: "3rem" }}
+                                                color='warning'
+                                            />
+                                        }
+                                    />
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Card elevation={0}>
+                            <CardContent>
+                                {summaryData && (
+                                    <SummaryInfo
+                                        title='Người dân đăng ký mới trong tháng'
+                                        number={summaryData.newUserRegisterThisMonth.toLocaleString(
+                                            "de-DE"
+                                        )}
+                                        icon={
+                                            <VerifiedUserOutlinedIcon
+                                                sx={{ fontSize: "3rem" }}
+                                                color='success'
+                                            />
+                                        }
+                                    />
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Card elevation={0}>
+                            <CardContent>
+                                {summaryData && (
+                                    <SummaryInfo
+                                        title='Doanh thu trong ngày'
+                                        number={summaryData.totalRevenueToDay.toLocaleString(
+                                            "de-DE"
+                                        )}
+                                        icon={
+                                            <AddModeratorOutlinedIcon
+                                                sx={{ fontSize: "3rem" }}
+                                                color='primary'
+                                            />
+                                        }
+                                    />
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Card elevation={0}>
+                            <CardContent>
+                                {summaryData && (
+                                    <SummaryInfo
+                                        title='Tổng doanh thu'
+                                        number={summaryData.totalRevenue.toLocaleString(
+                                            "de-DE"
+                                        )}
+                                        icon={
+                                            <AddModeratorOutlinedIcon
+                                                sx={{ fontSize: "3rem" }}
+                                                color='primary'
+                                            />
+                                        }
+                                    />
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
+            </div>
+            <div>
+                <Grid container spacing={2}>
+                    <Grid item xs={4}>
+                        <Card elevation={0}>
+                            <CardHeader
+                                title={
+                                    <Typography variant='h6'>
+                                        Phân tích các loại vắc xin được tiêm
+                                    </Typography>
+                                }
+                            />
+                            <CardContent>
+                                {summaryData && (
+                                    <VaccinatedChart
+                                        chartData={
+                                            summaryData.userVaccinatedAnalyst
+                                        }
+                                    />
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Card elevation={0}>
+                            <CardHeader
+                                title={
+                                    <Typography variant='h6'>
+                                        Danh sách lô vắc xin mới nhất
+                                    </Typography>
+                                }
+                            />
+                            <CardContent>
+                                {summaryData && (
+                                    <LatestVaccineLotTable
+                                        list={summaryData.latestVaccineLot}
+                                    />
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
+            </div>
+        </Stack>
     );
 };
 
@@ -190,34 +198,31 @@ const VaccinatedChart = ({ chartData }) => {
     ChartJS.register(ArcElement, Tooltip, Legend);
 
     const data = {
-        labels: [
-            `1 dose ${Math.floor(
-                (chartData.userWithOneDose / chartData.totalUser) * 100
-            )}%`,
-            `Upper 2 doses ${Math.floor(
-                (chartData.userWithAboveTwoDose / chartData.totalUser) * 100
-            )}%`,
-            `0 dose ${Math.floor(
-                (chartData.userWithZeroDose / chartData.totalUser) * 100
-            )}%`,
-        ],
+        labels: chartData.statisticsVaccineUsed.map(
+            (data) =>
+                `${data[0]} ${Math.floor(
+                    (data[1] / chartData.totalUser) * 100
+                )}%`
+        ),
         datasets: [
             {
                 label: "Vaccinated analyst",
-                data: [
-                    chartData.userWithOneDose,
-                    chartData.userWithAboveTwoDose,
-                    chartData.userWithZeroDose,
-                ],
+                data: chartData.statisticsVaccineUsed.map((data) => data[1]),
                 backgroundColor: [
                     colors.yellow["700"],
                     colors.green["700"],
                     colors.red["700"],
+                    colors.deepPurple["700"],
+                    colors.teal["700"],
+                    colors.deepOrange["700"],
                 ],
                 borderColor: [
                     colors.yellow["700"],
                     colors.green["700"],
                     colors.red["700"],
+                    colors.deepPurple["700"],
+                    colors.teal["700"],
+                    colors.deepOrange["700"],
                 ],
                 borderWidth: 1,
             },
@@ -241,25 +246,25 @@ const LatestVaccineLotTable = ({ list }) => {
     const tableHeader = [
         {
             field: "name",
-            headerName: "Lot number",
+            headerName: "Số Lô",
             width: 200,
         },
         {
             field: "vaccine",
-            headerName: "Vaccine",
+            headerName: "Tên Vaccine",
             width: 200,
             renderCell: (params) => params.value.name,
         },
         {
             field: "quantity",
-            headerName: "Quantity",
+            headerName: "Số Lượng",
             width: 150,
             align: "right",
             renderCell: (params) => params.value.toLocaleString("de-DE"),
         },
         {
             field: "createdAt",
-            headerName: "time",
+            headerName: "Thời Gian Tạo",
             flex: 1,
             renderCell: (params) =>
                 moment(params.value).format("DD-MM-YYYY HH:mm:ss"),

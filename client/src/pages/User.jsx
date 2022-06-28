@@ -32,7 +32,7 @@ const User = () => {
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/user/${params.row.id}`}
+                    to={`/system/user/${params.row.id}`}
                 >
                     {params.value}
                 </Button>
@@ -52,7 +52,7 @@ const User = () => {
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/user/${params.value}`}
+                    to={`/system/user/${params.value}`}
                     startIcon={<OpenInNewOutlinedIcon />}
                 >
                     Chi tiết
@@ -64,12 +64,12 @@ const User = () => {
     return (
         <>
             <PageHeader
-                title='Danh sách người dùng'
+                title='Danh sách người dân'
                 rightContent={
                     <Button
                         variant='contained'
                         component={Link}
-                        to='/user/create'
+                        to='/system/user/create'
                         startIcon={<PersonAddOutlinedIcon />}
                     >
                         Thêm

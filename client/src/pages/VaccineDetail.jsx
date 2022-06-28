@@ -101,7 +101,7 @@ const VaccineDetail = () => {
         try {
             await vaccineApi.delete(id);
             setOnDelete(false);
-            navigate("/vaccine");
+            navigate("/system/vaccine");
         } catch (err) {
             console.log(err);
             setOnDelete(false);

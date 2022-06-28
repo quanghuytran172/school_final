@@ -1,50 +1,53 @@
-import PropTypes from 'prop-types'
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined'
-import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined'
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import PropTypes from "prop-types";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import {
+    Box,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+} from "@mui/material";
 
-const CustomDialog = props => {
+const CustomDialog = (props) => {
     return (
         <Dialog
             open={props.open}
             PaperProps={{
-                style: { padding: '15px' }
+                style: { padding: "15px" },
             }}
+            maxWidth='1000px'
         >
             <DialogTitle>
                 {props.title}
-                {
-                    props.showIcon && <Box
+                {props.showIcon && (
+                    <Box
                         sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                     >
-                        {
-                            props.type === 'success' && <CheckCircleOutlinedIcon
+                        {props.type === "success" && (
+                            <CheckCircleOutlinedIcon
                                 color='success'
-                                sx={{fontSize: '3.5rem'}}
+                                sx={{ fontSize: "3.5rem" }}
                             />
-                        }
-                        {
-                            props.type === 'error' && <ErrorOutlineOutlinedIcon
+                        )}
+                        {props.type === "error" && (
+                            <ErrorOutlineOutlinedIcon
                                 color='error'
-                                sx={{fontSize: '3.5rem'}}
+                                sx={{ fontSize: "3.5rem" }}
                             />
-                        }
+                        )}
                     </Box>
-                }
+                )}
             </DialogTitle>
-            <DialogContent>
-                {props.content}
-            </DialogContent>
-            <DialogActions>
-                {props.actions}
-            </DialogActions>
+            <DialogContent>{props.content}</DialogContent>
+            <DialogActions>{props.actions}</DialogActions>
         </Dialog>
-    )
-}
+    );
+};
 
 CustomDialog.propTypes = {
     title: PropTypes.string,
@@ -52,7 +55,7 @@ CustomDialog.propTypes = {
     actions: PropTypes.node,
     showIcon: PropTypes.bool,
     type: PropTypes.string,
-    open: PropTypes.bool
-}
+    open: PropTypes.bool,
+};
 
-export default CustomDialog
+export default CustomDialog;

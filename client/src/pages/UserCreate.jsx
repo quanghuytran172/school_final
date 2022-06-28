@@ -96,7 +96,7 @@ const UserCreate = () => {
         try {
             const res = await userApi.create(params);
             setOnSubmit(false);
-            navigate(`/user/${res.user.id}`);
+            navigate(`/system/user/${res.user.id}`);
         } catch (err) {
             setOnSubmit(false);
             setDialogText(err.response.data);
@@ -110,12 +110,12 @@ const UserCreate = () => {
         <>
             <Box width='100%'>
                 <PageHeader
-                    title='Thêm người dùng'
+                    title='Thêm người dân'
                     rightContent={
                         <Stack direction='row' spacing={2}>
                             <Button
                                 variant='text'
-                                onClick={() => navigate("/user")}
+                                onClick={() => navigate("/system/user")}
                             >
                                 Hủy
                             </Button>

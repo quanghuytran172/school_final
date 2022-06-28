@@ -45,7 +45,7 @@ const Vaccine = () => {
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/vaccine/${params.row.id}`}
+                    to={`/system/vaccine/${params.row.id}`}
                 >
                     {params.value}
                 </Button>
@@ -101,7 +101,7 @@ const Vaccine = () => {
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/vaccine/${params.value}`}
+                    to={`/system/vaccine/${params.value}`}
                     startIcon={<OpenInNewOutlinedIcon />}
                 >
                     Chi tiết

@@ -44,7 +44,7 @@ const Account = () => {
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/account/${params.row.id}`}
+                    to={`/system/account/${params.row.id}`}
                 >
                     {params.value}
                 </Button>
@@ -72,7 +72,7 @@ const Account = () => {
                 <Button
                     variant='text'
                     component={Link}
-                    to={`/account/${params.value}`}
+                    to={`/system/account/${params.value}`}
                     startIcon={<OpenInNewOutlinedIcon />}
                 >
                     Chi tiết

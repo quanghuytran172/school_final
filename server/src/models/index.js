@@ -6,4 +6,6 @@ module.exports = {
     VaccineLot: require("./vaccineLot"),
     Disease: require("./disease"),
     AccountRole: require("./accountRole"),
+    Schedule: require("./schedule"),
+    UserBooking: require("./userBooking"),
 };

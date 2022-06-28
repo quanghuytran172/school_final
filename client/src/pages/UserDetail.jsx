@@ -38,7 +38,6 @@ const UserDetail = () => {
         const getUser = async () => {
             try {
                 const res = await userApi.getOne(id);
-                console.log(res);
                 setUser(res);
             } catch (err) {
                 console.log(err);
@@ -49,7 +48,7 @@ const UserDetail = () => {
 
     const onUpdateSuccess = () => {
         setDialogType("success");
-        setDialogText("Cập nhật thông tin người dùng thành công");
+        setDialogText("Cập nhật thông tin người dân thành công");
         setDialogOpen(true);
     };
 
@@ -64,7 +63,7 @@ const UserDetail = () => {
         try {
             await userApi.delete(id);
             setOnDelete(false);
-            navigate("/user");
+            navigate("/system/user");
         } catch (err) {
             console.log(err);
             setOnDelete(false);
@@ -77,7 +76,7 @@ const UserDetail = () => {
     return (
         <>
             <PageHeader
-                title='Thông tin chi tiết người dùng'
+                title='Thông tin chi tiết người dân'
                 rightContent={
                     <LoadingButton
                         variant='text'
@@ -86,7 +85,7 @@ const UserDetail = () => {
                         loading={onDelete}
                         onClick={() => setDialogOpenConfirm(true)}
                     >
-                        XÓA NGƯỜI DÙNG
+                        XÓA NGƯỜI DÂN
                     </LoadingButton>
                 }
             />
@@ -107,7 +106,7 @@ const UserDetail = () => {
             <CustomDialogConfirm
                 open={dialogOpenConfirm}
                 title={"Xác nhận xóa"}
-                content={"Bạn có muốn xóa người dùng này không ?"}
+                content={"Bạn có muốn xóa người dân này không ?"}
                 handleClose={() => {
                     setDialogOpenConfirm(false);
                 }}

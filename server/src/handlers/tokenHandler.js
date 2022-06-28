@@ -1,5 +1,5 @@
 const jsonwebtoken = require("jsonwebtoken");
-const { Account, AccountRole } = require("../models");
+const { Account, AccountRole, User } = require("../models");
 
 const tokenDecode = (req) => {
     const bearerHeader = req.headers["authorization"];
@@ -29,8 +29,10 @@ exports.verifyAdminToken = async (req, res, next) => {
         if (!role || role.roleName !== "Admin") {
             return res.status(403).json("Không có quyền truy cập");
         }
-
-        req.admin = admin;
+        req.role = {
+            id: admin.id,
+            roleName: role.roleName,
+        };
         next();
     } else {
         res.status(401).json("Unauthorized");
@@ -43,7 +45,6 @@ exports.verifyVaccinatedHelperToken = async (req, res, next) => {
         const account = await Account.findById(tokenDecoded.id);
         if (!account) return res.status(403).json("Không có quyền truy cập!");
         const role = await AccountRole.findById(account.role);
-        console.log(role.roleName);
         if (
             !(
                 role.roleName === "Admin" ||
@@ -52,7 +53,25 @@ exports.verifyVaccinatedHelperToken = async (req, res, next) => {
         ) {
             return res.status(403).json("Không có quyền truy cập");
         }
-        req.admin = account;
+        req.role = {
+            id: account.id,
+            roleName: role.roleName,
+        };
+        next();
+    } else {
+        res.status(401).json("Unauthorized");
+    }
+};
+
+exports.verifyUserToken = async (req, res, next) => {
+    const tokenDecoded = tokenDecode(req);
+    if (tokenDecoded) {
+        const user = await User.findById(tokenDecoded.id);
+        if (!user) return res.status(403).json("Không có quyền truy cập!");
+        req.role = {
+            user,
+            roleName: "User",
+        };
         next();
     } else {
         res.status(401).json("Unauthorized");

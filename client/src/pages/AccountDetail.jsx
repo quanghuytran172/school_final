@@ -104,11 +104,11 @@ const AccountDetail = () => {
                 password,
             });
             console.log(res);
-            setDialogText("Cập nhật thông tin Vaccine thành công");
+            setDialogText("Cập nhật thông tin tài khoản thành công");
             setDialogType("success");
         } catch (err) {
             console.log(err);
-            setDialogText("Cập nhật thông tin Vaccine thất bại");
+            setDialogText("Cập nhật thông tin tài khoản thất bại");
             setDialogType("error");
         } finally {
             setOnSubmit(false);
@@ -122,7 +122,7 @@ const AccountDetail = () => {
         try {
             await accountApi.delete(id);
             setOnDelete(false);
-            navigate("/account");
+            navigate("/system/account");
         } catch (err) {
             console.log(err);
             setOnDelete(false);

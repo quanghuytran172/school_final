@@ -1,9 +1,70 @@
 const jwt = require("jsonwebtoken");
-const { User, UserVaccine, VaccineLot, Vaccine } = require("../models");
+const {
+    User,
+    UserVaccine,
+    VaccineLot,
+    Vaccine,
+    UserBooking,
+} = require("../models");
 
 //login OTP using Phone Number
 exports.login = async (req, res) => {
-    return;
+    const token = req.body.token;
+    const number = `+${req.body.phoneNumber}`;
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const client = require("twilio")(accountSid, authToken);
+
+    client.verify
+        .services("VA73e1102bb007e8f4bfee65a3d644f6ca")
+        .verificationChecks.create({ to: number, code: token })
+        .then(async (verification_check) => {
+            //approved is correct, pending is fail
+            if (!verification_check.valid) {
+                return res.status(500).json("Mã xác thực không đúng");
+            }
+
+            const user = await User.findOne({
+                phoneNumber: req.body.phoneNumber,
+            });
+            if (!user)
+                return res.status(200).json({
+                    valid: verification_check.valid,
+                    isNewUser: true,
+                });
+            const token = jwt.sign(
+                {
+                    id: user._id,
+                },
+                process.env.TOKEN_SECRET_KEY
+            );
+
+            res.status(200).json({
+                valid: verification_check.valid,
+                isNewUser: false,
+                token,
+            });
+        })
+        .catch((err) => res.status(500).json(err));
+};
+
+exports.sendOtp = async (req, res) => {
+    const number = `+${req.body.phoneNumber}`;
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const client = require("twilio")(accountSid, authToken);
+    client.verify
+        .services("VA73e1102bb007e8f4bfee65a3d644f6ca")
+        .verifications.create({
+            from: "+12402209172",
+            to: number,
+            channel: "sms",
+        })
+        .then((verification) => {
+            console.log(verification);
+            return res.status(200).json(verification);
+        })
+        .catch((err) => res.status(500).json(err));
 };
 
 exports.create = async (req, res) => {
@@ -40,15 +101,80 @@ exports.create = async (req, res) => {
     }
 };
 
+exports.getVaccinationRecords = async (req, res) => {
+    try {
+        const { id } = req.role.user;
+        let userVaccine = await UserVaccine.find({
+            user: id,
+        })
+            .populate("vaccine")
+            .populate("vaccineLot")
+            .sort("-createdAt");
+
+        userVaccine = userVaccine.map((record) => {
+            return {
+                id: record.id,
+                vaccineLotName: record.vaccineLot.name,
+                name: record.vaccine.name,
+                price: record.vaccine.price,
+                createAtDay: record.createdAt,
+                createAtTime: record.createdAt,
+            };
+        });
+        res.status(200).json(userVaccine);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
+
+exports.getInfoByUser = async (req, res) => {
+    try {
+        const { id } = req.role.user;
+        const user = await User.findById(id);
+        res.status(200).json(user);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
+
+exports.updateInfoByUser = async (req, res) => {
+    const { phoneNumber, insuranceNumber } = req.body;
+    const { id } = req.role.user;
+    try {
+        let user = await User.findOne({ phoneNumber: phoneNumber });
+        if (user && user._id.toString() !== id)
+            return res
+                .status(403)
+                .json("Số điện thoại đã tồn tại trong hệ thống");
+
+        user = await User.findOne({ insuranceNumber: insuranceNumber });
+        if (user && user._id.toString() !== id)
+            return res
+                .status(403)
+                .json("Số bảo hiểm đã tồn tại trong hệ thống");
+
+        const updateUser = await User.findByIdAndUpdate(id, {
+            $set: req.body,
+        });
+        res.status(200).json(updateUser);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
+
+//admin
 exports.getAll = async (req, res) => {
     try {
         const list = await User.find({}).sort("-createdAt");
-        for (const user of list) {
-            const vaccine = await UserVaccine.find({
-                user: user._id,
-            }).sort("-createdAt");
-            user._doc.vaccine = vaccine;
-        }
+        // for (const user of list) {
+        //     const vaccine = await UserVaccine.find({
+        //         user: user._id,
+        //     }).sort("-createdAt");
+        //     user._doc.vaccine = vaccine;
+        // }
         res.status(200).json(list);
     } catch (err) {
         console.log(err);
@@ -64,6 +190,7 @@ exports.getOne = async (req, res) => {
         })
             .populate("vaccine")
             .populate("vaccineLot")
+            .populate("userBooking")
             .sort("-createdAt");
 
         user._doc.vaccinated = userVaccine;
@@ -116,11 +243,12 @@ exports.delete = async (req, res) => {
 
 exports.vaccinated = async (req, res) => {
     try {
-        const { userId, vaccineId, vaccineLotId } = req.body;
+        const { userId, vaccineId, vaccineLotId, userBookingId } = req.body;
         const newVaccine = new UserVaccine({
             user: userId,
             vaccine: vaccineId,
             vaccineLot: vaccineLotId,
+            userBooking: userBookingId,
         });
         const savedUserVaccine = await newVaccine.save();
         await VaccineLot.findOneAndUpdate(

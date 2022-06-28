@@ -20,7 +20,6 @@ import userApi from "../api/userApi";
 
 const UserVaccine = ({ user }) => {
     const [userVaccines, setUserVaccines] = useState(user.vaccinated);
-    console.log(userVaccines);
     const [vaccineList, setVaccineList] = useState([]);
     const [vaccineLots, setVaccineLots] = useState([]);
     const [selectedVaccine, setSelectedVaccine] = useState(null);
@@ -36,7 +35,6 @@ const UserVaccine = ({ user }) => {
         const getVaccines = async () => {
             try {
                 const res = await vaccineApi.getAll();
-                console.log(res);
                 setVaccineList(res);
             } catch (err) {
                 console.log(err);
@@ -62,7 +60,7 @@ const UserVaccine = ({ user }) => {
             renderCell: (params) => (
                 <Button
                     component={Link}
-                    to={`/vaccine/${params.value.id}`}
+                    to={`/system/vaccine/${params.value.id}`}
                     sx={{ textTransform: "none" }}
                 >
                     {params.value.name}
@@ -128,15 +126,15 @@ const UserVaccine = ({ user }) => {
                             Thông tin tiêm chủng
                         </Typography>
                     }
-                    action={
-                        <Button
-                            variant='contained'
-                            disableElevation
-                            onClick={() => setShowAddDialog(true)}
-                        >
-                            Thêm Vaccine
-                        </Button>
-                    }
+                    // action={
+                    //     <Button
+                    //         variant='contained'
+                    //         disableElevation
+                    //         onClick={() => setShowAddDialog(true)}
+                    //     >
+                    //         Thêm Vaccine
+                    //     </Button>
+                    // }
                 />
                 <CardContent>
                     <DataGrid
@@ -151,7 +149,7 @@ const UserVaccine = ({ user }) => {
                     />
                 </CardContent>
             </Card>
-            <CustomDialog
+            {/* <CustomDialog
                 open={showAddDialog}
                 title='Chọn Vaccine'
                 content={
@@ -232,7 +230,7 @@ const UserVaccine = ({ user }) => {
                         </LoadingButton>
                     </Box>
                 }
-            />
+            /> */}
 
             <CustomDialog
                 open={dialogOpen}
