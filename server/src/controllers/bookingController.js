@@ -80,6 +80,8 @@ exports.booking = async (req, res) => {
         });
 
         if (findUser && req.body.bookingType === "Đăng ký hộ") {
+            if (findUser.id === id)
+                return res.status(400).json("Không thể đăng ký chính mình");
             const findFriendBookingDuplicate = await UserBooking.find({
                 user: id,
                 relativeUser: findUser.id,
