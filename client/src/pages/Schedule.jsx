@@ -34,15 +34,18 @@ const Schedule = () => {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     const [onDelete, setOnDelete] = useState(false);
+    const [selectedSchedule, setSelectedSchedule] = useState("");
+
     const [dialogOpenConfirm, setDialogOpenConfirm] = useState({
         status: false,
         params: "",
     });
-    const [selectedSchedule, setSelectedSchedule] = useState("");
-
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogType, setDialogType] = useState("");
+    const [dialogText, setDialogText] = useState("");
     const getSchedule = async () => {
         try {
-            const res = await scheduleApi.getAll();
+            const res = await scheduleApi.getAllSystem();
             setScheduleList(res);
         } catch (err) {
             console.log(err);
@@ -162,8 +165,11 @@ const Schedule = () => {
         try {
             await scheduleApi.delete(scheduleId);
             getSchedule();
+            setOnDelete(false);
         } catch (err) {
-            console.log(err);
+            setDialogText(err.response.data || "Xóa thất bại");
+            setDialogType("error");
+            setDialogOpen(true);
         } finally {
             setOnDelete(false);
         }
@@ -221,6 +227,29 @@ const Schedule = () => {
                     setDialogOpenConfirm({ status: false, params: "" });
                 }}
                 delete={true}
+            />
+            <CustomDialog
+                open={dialogOpen}
+                type={dialogType}
+                showIcon
+                content={
+                    <Typography variant='subtitle1' textAlign='center'>
+                        {dialogText}
+                    </Typography>
+                }
+                actions={
+                    <Box
+                        width='100%'
+                        sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                        <Button
+                            variant='contained'
+                            onClick={() => setDialogOpen(false)}
+                        >
+                            OK
+                        </Button>
+                    </Box>
+                }
             />
         </>
     );

@@ -15,7 +15,6 @@ const User = () => {
         const getUsers = async () => {
             try {
                 const res = await userApi.getAll();
-                console.log(res);
                 setUserList(res);
             } catch (err) {
                 console.log(err);

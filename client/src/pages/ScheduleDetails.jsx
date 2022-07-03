@@ -24,6 +24,7 @@ import userApi from "../api/userApi";
 import scheduleApi from "../api/scheduleApi";
 import bookingApi from "../api/bookingApi";
 import VaccinesOutlinedIcon from "@mui/icons-material/VaccinesOutlined";
+import BookingForm from "../components/BookingForm";
 
 const ScheduleDetails = () => {
     const { id } = useParams();
@@ -37,8 +38,12 @@ const ScheduleDetails = () => {
     const [vaccineList, setVaccineList] = useState([]);
     const [vaccineLots, setVaccineLots] = useState([]);
     const [selectedVaccine, setSelectedVaccine] = useState(null);
+    const [selectedVaccineBooking, setSelectedVaccineBooking] = useState(null);
+
     const [selectedLot, setSelectedLot] = useState(null);
-    const [showAddDialog, setShowAddDialog] = useState(false);
+    const [showAddDialogVaccine, setShowAddDialogVaccine] = useState(false);
+    const [showAddDialogBooking, setShowAddDialogBooking] = useState(false);
+
     const [onAddVaccinated, setOnAddVaccinated] = useState(false);
 
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -48,12 +53,21 @@ const ScheduleDetails = () => {
         status: false,
         params: "",
     });
-
+    const [formBooking, setFormBooking] = useState({
+        insuranceNumber: "",
+        fullname: "",
+        dateOfBirth: "01/01/1990",
+        phoneNumber: "",
+        address: "",
+        gender: "",
+        identify: "",
+        email: "",
+        job: "",
+    });
     useEffect(() => {
         const getSchedule = async () => {
             try {
                 const res = await scheduleApi.getOne(id);
-                console.log(res);
                 setScheduleInfo(res);
                 setUserList(res.userList);
             } catch (err) {
@@ -186,7 +200,7 @@ const ScheduleDetails = () => {
                                     : params.row.user,
                                 userBookingId: params.id,
                             });
-                            setShowAddDialog(true);
+                            setShowAddDialogVaccine(true);
                         }}
                     >
                         Tiêm vaccine
@@ -214,10 +228,25 @@ const ScheduleDetails = () => {
         },
     ];
 
-    const closeAddDialog = () => {
+    const closeAddDialogVaccine = () => {
         setSelectedVaccine(null);
-        setShowAddDialog(false);
+        setShowAddDialogVaccine(false);
         setParamsToAddVaccine({});
+    };
+    const closeAddDialogBooking = () => {
+        setFormBooking({
+            insuranceNumber: "",
+            fullname: "",
+            dateOfBirth: "01/01/1990",
+            phoneNumber: "",
+            address: "",
+            gender: "",
+            identify: "",
+            email: "",
+            job: "",
+        });
+        setSelectedVaccineBooking(null);
+        setShowAddDialogBooking(false);
     };
 
     const addVaccinated = async () => {
@@ -256,9 +285,49 @@ const ScheduleDetails = () => {
             setDialogType("error");
             setDialogOpen(true);
         } finally {
-            closeAddDialog();
+            closeAddDialogVaccine();
 
             setOnAddVaccinated(false);
+        }
+    };
+
+    const handleBookingDirectly = async () => {
+        try {
+            if (
+                !formBooking.insuranceNumber ||
+                !formBooking.fullname ||
+                !formBooking.dateOfBirth ||
+                !formBooking.phoneNumber ||
+                !formBooking.gender ||
+                !formBooking.identify ||
+                !formBooking.job ||
+                !formBooking.email ||
+                !formBooking.address ||
+                !selectedVaccineBooking
+            ) {
+                setDialogText("Vui lòng điền đầy đủ thông tin");
+                setDialogType("error");
+                setDialogOpen(true);
+                return;
+            }
+
+            const userBooking = await scheduleApi.directBooking({
+                scheduleId: scheduleInfo.id,
+                ...formBooking,
+                vaccineId: selectedVaccineBooking._id,
+            });
+            setDialogText("Đăng ký thành công");
+            setDialogType("success");
+            setDialogOpen(true);
+            setUserList([
+                ...userList,
+                { ...userBooking, vaccine: selectedVaccineBooking.name },
+            ]);
+            closeAddDialogBooking();
+        } catch (error) {
+            setDialogText(error.response.data || "Đăng ký thất bại");
+            setDialogType("error");
+            setDialogOpen(true);
         }
     };
     const convertStatus = (status) => {
@@ -336,7 +405,7 @@ const ScheduleDetails = () => {
                         <Button
                             variant='contained'
                             disableElevation
-                            onClick={() => setShowAddDialog(true)}
+                            onClick={() => setShowAddDialogBooking(true)}
                         >
                             Đăng ký trực tiếp
                         </Button>
@@ -357,7 +426,7 @@ const ScheduleDetails = () => {
                 </CardContent>
             </Card>
             <CustomDialog
-                open={showAddDialog}
+                open={showAddDialogVaccine}
                 title='Chọn Vaccine'
                 content={
                     <Box sx={{ width: "400px" }}>
@@ -423,7 +492,7 @@ const ScheduleDetails = () => {
                     >
                         <Button
                             variant='text'
-                            onClick={closeAddDialog}
+                            onClick={closeAddDialogVaccine}
                             disabled={onAddVaccinated}
                         >
                             Hủy
@@ -432,6 +501,41 @@ const ScheduleDetails = () => {
                             variant='contained'
                             onClick={addVaccinated}
                             loading={onAddVaccinated}
+                        >
+                            Thêm
+                        </LoadingButton>
+                    </Box>
+                }
+            />
+            <CustomDialog
+                open={showAddDialogBooking}
+                title='Nhập thông tin tiêm chủng'
+                content={
+                    <Box sx={{ width: "1000px" }}>
+                        <BookingForm
+                            formBooking={formBooking}
+                            setFormBooking={setFormBooking}
+                            vaccineList={vaccineList}
+                            setSelectedVaccineBooking={
+                                setSelectedVaccineBooking
+                            }
+                        />
+                    </Box>
+                }
+                actions={
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                        }}
+                        width='100%'
+                    >
+                        <Button variant='text' onClick={closeAddDialogBooking}>
+                            Hủy
+                        </Button>
+                        <LoadingButton
+                            variant='contained'
+                            onClick={handleBookingDirectly}
                         >
                             Thêm
                         </LoadingButton>

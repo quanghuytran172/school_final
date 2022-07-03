@@ -106,7 +106,6 @@ const UserCreate = ({ number }) => {
             setDialogText(err.response.data);
             setDialogType("error");
             setDialogOpen(true);
-            console.log(err.response);
         }
     };
 

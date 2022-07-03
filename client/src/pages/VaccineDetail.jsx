@@ -82,7 +82,6 @@ const VaccineDetail = () => {
                 description,
                 diseaseId: selectedDisease.id,
             });
-            console.log(res);
             setDialogText("Cập nhật thông tin Vaccine thành công");
             setDialogType("success");
         } catch (err) {

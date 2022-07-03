@@ -52,7 +52,9 @@ const UserCreate = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState("");
     const [dialogText, setDialogText] = useState("");
-
+    function isVietnamesePhoneNumberValid(number) {
+        return /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/.test(number);
+    }
     const createUser = async () => {
         if (onSubmit) return;
 
@@ -78,7 +80,10 @@ const UserCreate = () => {
         setIdentifyErr(!identify);
         setJobErr(!job);
         if (!err.every((e) => !e)) return;
-
+        if (!isVietnamesePhoneNumberValid(phone)) {
+            alert("Số điện thoại không đúng định dạng");
+            return;
+        }
         setOnSubmit(true);
 
         const params = {
@@ -102,7 +107,6 @@ const UserCreate = () => {
             setDialogText(err.response.data);
             setDialogType("error");
             setDialogOpen(true);
-            console.log(err.response);
         }
     };
 

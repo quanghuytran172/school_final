@@ -82,7 +82,6 @@ const AccountProfile = () => {
                 phoneNumber,
                 password,
             });
-            console.log(res);
             setDialogText("Cập nhật thông tin tài khoản thành công");
             setDialogType("success");
         } catch (err) {

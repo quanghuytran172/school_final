@@ -28,7 +28,6 @@ const Dashboard = () => {
         const getData = async () => {
             try {
                 const res = await accountApi.getSummary();
-                console.log(res);
                 setSummaryData(res);
             } catch (err) {
                 console.log(err);
@@ -194,7 +193,6 @@ const SummaryInfo = ({ title, number, icon }) => {
 };
 
 const VaccinatedChart = ({ chartData }) => {
-    console.log(chartData);
     ChartJS.register(ArcElement, Tooltip, Legend);
 
     const data = {

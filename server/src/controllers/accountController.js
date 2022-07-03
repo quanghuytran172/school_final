@@ -43,7 +43,6 @@ exports.login = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const account = await Account.findOne({ username: req.body.username });
-        console.log(req.body);
         if (account !== null) {
             return res.status(403).json("Tài khoản đã tồn tại");
         }
@@ -103,7 +102,6 @@ exports.getInfoAccount = async (req, res) => {
     try {
         const { id } = req.role;
         const account = await Account.findById(id);
-        console.log(account, id);
         const decryptedPass = CryptoJS.AES.decrypt(
             account.password,
             process.env.PASSWORD_SECRET_KEY

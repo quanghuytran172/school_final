@@ -219,7 +219,6 @@ const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
 
         try {
             const res = await userApi.update(user.id, params);
-            console.log(res);
             setOnUpdate(false);
             onUpdateSuccess();
         } catch (err) {

@@ -1,9 +1,14 @@
-const { Schedule, UserBooking, User, UserVaccine } = require("../models");
+const {
+    Schedule,
+    UserBooking,
+    User,
+    UserVaccine,
+    Vaccine,
+} = require("../models");
 
 // Lấy thông tin in giấy chứng nhận
 exports.getInfoVaccinated = async (req, res) => {
     try {
-        console.log(req.params.userId, req.params.userBookingId);
         const userVaccineDetails = await UserVaccine.findOne({
             user: req.params.userId,
             userBooking: req.params.userBookingId,
@@ -57,7 +62,30 @@ exports.getAll = async (req, res) => {
         res.status(500).json(err);
     }
 };
+exports.getScheduleAvailable = async (req, res) => {
+    try {
+        const scheduleList = await Schedule.find({ status: { $ne: 0 } })
+            .populate("account")
+            .sort("-createdAt");
+        for (const schedule of scheduleList) {
+            schedule.account.password = undefined;
+            const usersBooking = await UserBooking.find({
+                schedule: schedule._id,
+            });
+            const listVaccine = await Vaccine.find({
+                _id: { $in: schedule.listVaccine },
+            }).populate("diseaseId");
 
+            // get total user booking
+            schedule.listVaccine = listVaccine;
+            schedule._doc.totalUsersBooking = usersBooking.length;
+        }
+        res.status(200).json(scheduleList);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json(err);
+    }
+};
 // Get details schedule including user booking
 exports.getOne = async (req, res) => {
     try {
@@ -102,14 +130,13 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
+        const findUserBookingExists = await UserBooking.find({
+            schedule: req.params.id,
+        });
+        if (findUserBookingExists.length)
+            return res.status(500).json("Không thể xóa lịch");
         await Schedule.findByIdAndDelete(req.params.id);
-        await UserBooking.updateMany(
-            {
-                schedule: req.params.id,
-                status: "1",
-            },
-            { status: "0" }
-        );
+
         res.status(200).json("Deleted");
     } catch (err) {
         console.log(err);
@@ -135,16 +162,22 @@ exports.directBooking = async (req, res) => {
     const findUser = await User.findOne({
         $or: [
             { phoneNumber: req.body.phoneNumber },
-            { insuranceNumber: req.body.identify },
+            { insuranceNumber: req.body.insuranceNumber },
+            { identify: req.body.identify },
         ],
     });
     let saveUser;
     if (findUser) {
         const findBookingDuplicate = await UserBooking.find({
-            user: findUser.id,
             status: "1",
-            bookingType: req.body.bookingType,
-            insuranceNumber: req.body.insuranceNumber,
+            $or: [
+                {
+                    user: findUser.id,
+                },
+                {
+                    relativeUser: findUser.id,
+                },
+            ],
         });
 
         if (findBookingDuplicate && findBookingDuplicate.length) {
@@ -166,13 +199,14 @@ exports.directBooking = async (req, res) => {
         });
         saveUser = await newUser.save();
     }
+    const idUser = findUser ? findUser.id : saveUser.id;
 
-    const idUser = saveUser && saveUser.id ? saveUser.id : findUser.id;
+    // const idUser = saveUser && saveUser.id ? saveUser.id : findUser.id;
     // Thêm người đăng ký trực tiếp
     const formBooking = new UserBooking({
         user: idUser,
         schedule: req.body.scheduleId,
-        bookingType: req.body.bookingType,
+        bookingType: "Cá nhân",
         insuranceNumber: req.body.insuranceNumber,
         fullname: req.body.fullname,
         dateOfBirth: req.body.dateOfBirth,

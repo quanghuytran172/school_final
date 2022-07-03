@@ -11,14 +11,8 @@ import {
     Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import userApi from "../api/userApi";
-import {
-    PageHeader,
-    CustomDialog,
-    UserVaccine,
-    CustomDialogConfirm,
-} from "../components";
+import { PageHeader, CustomDialog } from "../components";
 import { LoadingButton } from "@mui/lab";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -181,7 +175,6 @@ const UserInfo = ({ user, onUpdateFalse, onUpdateSuccess }) => {
 
         try {
             const res = await userApi.updateInfo(params);
-            console.log(res);
             setOnUpdate(false);
             onUpdateSuccess();
         } catch (err) {

@@ -9,8 +9,16 @@ router.post(
     tokenHandler.verifyVaccinatedHelperToken,
     scheduleController.directBooking
 );
-router.get("/certificate/:userBookingId/:userId", tokenHandler.verifyVaccinatedHelperToken, scheduleController.getInfoVaccinated);
-
+router.get(
+    "/certificate/:userBookingId/:userId",
+    tokenHandler.verifyVaccinatedHelperToken,
+    scheduleController.getInfoVaccinated
+);
+router.get(
+    "/system",
+    tokenHandler.verifyVaccinatedHelperToken,
+    scheduleController.getAll
+);
 
 router.post(
     "/",
@@ -20,8 +28,8 @@ router.post(
 
 router.get(
     "/",
-    tokenHandler.verifyVaccinatedHelperToken,
-    scheduleController.getAll
+    tokenHandler.verifyUserToken,
+    scheduleController.getScheduleAvailable
 );
 
 router.get(

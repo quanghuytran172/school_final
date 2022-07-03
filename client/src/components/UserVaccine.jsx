@@ -108,7 +108,6 @@ const UserVaccine = ({ user }) => {
             setDialogType("success");
             setDialogOpen(true);
         } catch (err) {
-            console.log(err);
             setDialogText("Thêm thất bại");
             setDialogType("error");
             setDialogOpen(true);
