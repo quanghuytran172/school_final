@@ -28,17 +28,17 @@ exports.getAll = async (req, res) => {
     }
 };
 
-exports.getOne = async (req, res) => {
-    try {
-        const vaccineLot = await VaccineLot.findById(req.params.id).populate(
-            "vaccine"
-        );
-        res.status(200).json(vaccineLot);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json(err);
-    }
-};
+// exports.getOne = async (req, res) => {
+//     try {
+//         const vaccineLot = await VaccineLot.findById(req.params.id).populate(
+//             "vaccine"
+//         );
+//         res.status(200).json(vaccineLot);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json(err);
+//     }
+// };
 
 exports.update = async (req, res) => {
     try {

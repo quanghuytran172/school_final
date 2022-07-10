@@ -29,7 +29,7 @@ exports.getAll = async (req, res) => {
             const vaccineLots = await VaccineLot.find({
                 vaccine: vaccine._id,
             });
-            vaccine._doc.diseaseName = disease.name;
+            vaccine._doc.diseaseName = disease?.name || "Unknown";
             vaccine._doc.quantity = vaccineLots.reduce(
                 (total, item) => total + Number(item.quantity),
                 0

@@ -18,13 +18,7 @@ router.get(
     tokenHandler.verifyVaccinatedHelperToken,
     accountController.getInfoAccount
 );
-router.get("/", tokenHandler.verifyAdminToken, accountController.getAll);
-router.post("/", tokenHandler.verifyAdminToken, accountController.create);
-router.get("/:id", tokenHandler.verifyAdminToken, accountController.getOne);
-router.put("/:id", tokenHandler.verifyAdminToken, accountController.update);
-router.delete("/:id", tokenHandler.verifyAdminToken, accountController.delete);
-
-router.post(
+router.put(
     "/update-profile",
     tokenHandler.verifyVaccinatedHelperToken,
     accountController.updateInfoByAccount
@@ -36,5 +30,10 @@ router.post(
         res.status(200).json(req.role);
     }
 );
+router.get("/", tokenHandler.verifyAdminToken, accountController.getAll);
+router.post("/", tokenHandler.verifyAdminToken, accountController.create);
+router.get("/:id", tokenHandler.verifyAdminToken, accountController.getOne);
+router.put("/:id", tokenHandler.verifyAdminToken, accountController.update);
+router.delete("/:id", tokenHandler.verifyAdminToken, accountController.delete);
 
 module.exports = router;

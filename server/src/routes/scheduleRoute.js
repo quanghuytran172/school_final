@@ -21,33 +21,32 @@ router.get(
 );
 
 router.post(
-    "/",
+    "/system",
     tokenHandler.verifyVaccinatedHelperToken,
     scheduleController.create
 );
 
 router.get(
-    "/",
-    tokenHandler.verifyUserToken,
-    scheduleController.getScheduleAvailable
-);
-
-router.get(
-    "/:id",
+    "/system/:id",
     tokenHandler.verifyVaccinatedHelperToken,
     scheduleController.getOne
 );
 
 router.put(
-    "/:id",
+    "/system/:id",
     tokenHandler.verifyVaccinatedHelperToken,
     scheduleController.update
 );
 
 router.delete(
-    "/:id",
+    "/system/:id",
     tokenHandler.verifyVaccinatedHelperToken,
     scheduleController.delete
+);
+router.get(
+    "/",
+    tokenHandler.verifyUserToken,
+    scheduleController.getScheduleAvailable
 );
 
 module.exports = router;

@@ -32,11 +32,11 @@ router.get(
     vaccineLotController.getAll
 );
 
-router.get(
-    "/lots/:id",
-    tokenHandler.verifyAdminToken,
-    vaccineLotController.getOne
-);
+// router.get(
+//     "/lots/:id",
+//     tokenHandler.verifyAdminToken,
+//     vaccineLotController.getOne
+// );
 
 router.put(
     "/lots/:id",
