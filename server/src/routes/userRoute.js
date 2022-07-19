@@ -5,6 +5,9 @@ const { userController } = require("../controllers");
 
 router.post("/login", userController.login);
 router.post("/sendOtp", userController.sendOtp);
+router.post("/check-token", tokenHandler.verifyUserToken, (req, res) => {
+    res.status(200).json(req.role);
+});
 router.get(
     "/vaccination-records",
     tokenHandler.verifyUserToken,
@@ -55,7 +58,4 @@ router.delete(
     userController.delete
 );
 
-router.post("/check-token", tokenHandler.verifyUserToken, (req, res) => {
-    res.status(200).json(req.role);
-});
 module.exports = router;

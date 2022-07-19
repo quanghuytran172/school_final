@@ -99,6 +99,7 @@ const UserCreate = ({ number }) => {
 
         try {
             const res = await userApi.create(params);
+            localStorage.setItem("token", res.token);
             setOnSubmit(false);
             navigate("/");
         } catch (err) {
@@ -344,7 +345,6 @@ const LoginUser = () => {
         };
         try {
             await authApi.sendOtpUser(params);
-            // localStorage.setItem("token", res.token);
             setOnSubmit(false);
             setIsCreateOtp(true);
             setLogErr("");

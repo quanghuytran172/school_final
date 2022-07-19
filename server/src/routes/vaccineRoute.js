@@ -26,11 +26,11 @@ router.post(
     vaccineLotController.create
 );
 
-router.get(
-    "/lots/get-all",
-    tokenHandler.verifyAdminToken,
-    vaccineLotController.getAll
-);
+// router.get(
+//     "/lots/get-all",
+//     tokenHandler.verifyAdminToken,
+//     vaccineLotController.getAll
+// );
 
 // router.get(
 //     "/lots/:id",

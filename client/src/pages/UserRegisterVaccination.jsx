@@ -198,7 +198,7 @@ const UserRegisterVaccination = () => {
                     Đăng ký tiêm chủng
                 </Typography>
 
-                {scheduleList.length && (
+                {scheduleList.length ? (
                     <>
                         <Stepper activeStep={activeStep}>
                             {steps.map((label, index) => {
@@ -237,19 +237,29 @@ const UserRegisterVaccination = () => {
                                         onClick={handleBack}
                                         sx={{ mr: 1 }}
                                     >
-                                        Back
+                                        Quay lại
                                     </Button>
                                     <Box sx={{ flex: "1 1 auto" }} />
 
                                     <Button onClick={handleSubmit}>
                                         {activeStep === steps.length - 1
-                                            ? "Finish"
-                                            : "Next"}
+                                            ? "Nộp đơn đăng ký"
+                                            : "Tiếp theo"}
                                     </Button>
                                 </Box>
                             </>
                         )}
                     </>
+                ) : (
+                    <Typography
+                        align='center'
+                        marginBottom={5}
+                        variant='subtitle1'
+                        gutterBottom
+                        component='div'
+                    >
+                        Hiện không có lịch tiêm nào
+                    </Typography>
                 )}
                 <CustomDialog
                     open={dialogOpen}

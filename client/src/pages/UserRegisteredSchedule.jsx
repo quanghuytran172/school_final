@@ -80,6 +80,17 @@ const UserRegisteredSchedule = () => {
     return (
         <>
             <PageHeader title='Lịch tiêm đã đăng ký' />
+            {listBooking.length === 0 && (
+                <Typography
+                    align='center'
+                    marginBottom={5}
+                    variant='subtitle1'
+                    gutterBottom
+                    component='div'
+                >
+                    Bạn không có lịch tiêm đã đăng ký nào!
+                </Typography>
+            )}
             {listBooking.map((booking, index) => (
                 <Card style={{ marginBottom: 1 + "em" }} key={index}>
                     <CardHeader
@@ -192,7 +203,7 @@ const UserRegisteredSchedule = () => {
 
                                 <Grid item xs={12}>
                                     <Typography variant='body1' gutterBottom>
-                                        <b>Loại đăng ký:</b>{" "}
+                                        <b>Hình thức đăng ký:</b>{" "}
                                         {booking.bookingType}
                                     </Typography>
                                 </Grid>

@@ -64,7 +64,7 @@ exports.getAll = async (req, res) => {
 };
 exports.getScheduleAvailable = async (req, res) => {
     try {
-        const scheduleList = await Schedule.find({ status: { $ne: 0 } })
+        const scheduleList = await Schedule.find({ status: { $ne: 0, $ne: 2 } })
             .populate("account")
             .sort("-createdAt");
         for (const schedule of scheduleList) {

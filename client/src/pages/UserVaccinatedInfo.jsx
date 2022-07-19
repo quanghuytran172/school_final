@@ -44,13 +44,13 @@ const UserVaccinatedInfo = () => {
         },
 
         {
-            field: "createdAtDay",
+            field: "createAtDay",
             headerName: "Ngày tiêm",
             flex: 1,
             renderCell: (params) => moment(params.value).format("DD/MM/YYYY"),
         },
         {
-            field: "createdAtTime",
+            field: "createAtTime",
             headerName: "Thời gian tiêm",
             flex: 1,
             renderCell: (params) => moment(params.value).format("HH:mm:ss"),
