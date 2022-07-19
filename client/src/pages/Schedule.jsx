@@ -70,32 +70,33 @@ const Schedule = () => {
         {
             field: "title",
             headerName: "Tiêu đề",
-            width: 280,
+            maxWidth: 500,
+            minWidth: 250,
             renderCell: (params) => params.value,
         },
         {
             field: "time",
             headerName: "Thời gian",
-            width: 180,
+            width: 150,
             renderCell: (params) =>
                 moment(params.row.time).format("DD-MM-YYYY"),
         },
         {
             field: "maxQuantity",
             headerName: "Số lượng tối đa",
-            width: 180,
+            width: 150,
             renderCell: (params) => params.value,
         },
         {
             field: "totalUsersBooking",
             headerName: "Số người đăng ký",
-            width: 180,
+            width: 150,
             renderCell: (params) => params.value,
         },
         {
             field: "status",
             headerName: "Trạng thái",
-            width: 180,
+            width: 120,
             renderCell: (params) => {
                 if (Number(params.value) === 0) {
                     return "Đã đóng";
@@ -117,7 +118,7 @@ const Schedule = () => {
         {
             field: "_id",
             headerName: "Hành Động",
-            minWidth: 170,
+            minWidth: 300,
 
             flex: 1,
             renderCell: (params) => (

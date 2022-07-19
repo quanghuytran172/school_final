@@ -99,7 +99,7 @@ const ChooseVaccine = ({
                                             style={{
                                                 opacity: 1,
                                                 color: "#3057d5",
-                                                marginLeft: "10em",
+                                                marginLeft: "1.50em",
                                             }}
                                         />
                                     }

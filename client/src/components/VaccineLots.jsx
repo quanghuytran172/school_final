@@ -41,7 +41,7 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
         {
             field: "name",
             headerName: "Số Lô",
-            width: 200,
+            width: 120,
         },
         {
             field: "quantity",
@@ -70,13 +70,14 @@ const VaccineLots = ({ vaccine, onLotAdded, onLotDeleted, onLotUpdated }) => {
         {
             field: "createdAt",
             headerName: "Thời Gian Tạo",
-            flex: 1,
+            width: 150,
             renderCell: (params) =>
                 moment(params.value).format("DD-MM-YYYY HH:mm:ss"),
         },
         {
             field: "_id",
             headerName: "Hành Động",
+            minWidth: 250,
             flex: 1,
             renderCell: (params) => (
                 <>

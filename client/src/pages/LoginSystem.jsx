@@ -112,7 +112,7 @@ const LoginSystem = () => {
                         />
                     </FormControl>
                     {loginErr && (
-                        <FormControl>
+                        <FormControl sx={{ marginTop: "-1.5rem" }}>
                             <Typography color='error'>{loginErr}</Typography>
                         </FormControl>
                     )}
@@ -121,7 +121,7 @@ const LoginSystem = () => {
                         variant='contained'
                         fullWidth
                         size='large'
-                        sx={{ marginTop: "0rem" }}
+                        sx={{ marginTop: "0.5rem" }}
                         onClick={loginSubmit}
                     >
                         Đăng nhập

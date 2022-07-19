@@ -454,7 +454,7 @@ const LoginUser = () => {
 
                                 {logErr && (
                                     <FormControl>
-                                        <Typography color='error'>
+                                        <Typography color='error' sx={{ marginTop: "-1.5rem" }} >
                                             {logErr}
                                         </Typography>
                                     </FormControl>
